@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Format check
+        run: npm run format:check
+      - name: Unit tests
+        run: npm run test
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://example.com
+
+      # SPEC §5.9 — the JS budget is a gate, not a warning. Threshold is
+      # 115 KB gzip total, of which the App Router framework floor is ~100 KB.
+      # See docs/PHASE-0-NOTES.md for why this differs from the spec's 90 KB.
+      - name: JS budget
+        run: |
+          TOTAL=0
+          for f in $(find .next/static/chunks -maxdepth 1 -name '*.js'); do
+            TOTAL=$((TOTAL + $(gzip -9 -c "$f" | wc -c)))
+          done
+          echo "Shared JS: $((TOTAL / 1024)) KB gzip"
+          if [ "$TOTAL" -gt 117760 ]; then
+            echo "::error::JS budget exceeded: $((TOTAL / 1024)) KB > 115 KB"
+            exit 1
+          fi

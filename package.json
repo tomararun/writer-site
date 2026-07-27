@@ -1,0 +1,45 @@
+{
+  "name": "writer-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint src tests",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:fix": "eslint src tests --fix",
+    "verify": "npm run typecheck && npm run lint && npm run test && npm run build"
+  },
+  "dependencies": {
+    "next": "15.5.4",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "eslint": "^9.34.0",
+    "eslint-config-next": "15.5.4",
+    "jsdom": "^26.1.0",
+    "lint-staged": "^16.1.6",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4",
+    "@eslint/eslintrc": "^3.3.1"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,css,md,json}": "prettier --write",
+    "*.{ts,tsx}": "eslint --fix"
+  }
+}
