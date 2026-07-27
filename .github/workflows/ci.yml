@@ -29,16 +29,30 @@ jobs:
           NEXT_PUBLIC_SITE_URL: https://example.com
 
       # SPEC §5.9 — the JS budget is a gate, not a warning. Threshold is
-      # 115 KB gzip total, of which the App Router framework floor is ~100 KB.
-      # See docs/PHASE-0-NOTES.md for why this differs from the spec's 90 KB.
+      # 115 KB gzip on the article route, of which the App Router framework
+      # floor is ~100 KB. See docs/PHASE-0-NOTES.md for why this differs from
+      # the spec's 90 KB.
+      #
+      # Measured from app-build-manifest.json: the union of JS files the root
+      # layout and the article route actually load. Globbing .next/static/chunks
+      # would also count polyfills.js (legacy browsers only) and the pages-router
+      # runtime Next emits for its built-in /_error — neither ships to readers.
       - name: JS budget
         run: |
-          TOTAL=0
-          for f in $(find .next/static/chunks -maxdepth 1 -name '*.js'); do
-            TOTAL=$((TOTAL + $(gzip -9 -c "$f" | wc -c)))
-          done
-          echo "Shared JS: $((TOTAL / 1024)) KB gzip"
-          if [ "$TOTAL" -gt 117760 ]; then
-            echo "::error::JS budget exceeded: $((TOTAL / 1024)) KB > 115 KB"
-            exit 1
-          fi
+          node -e '
+          const { gzipSync } = require("zlib");
+          const fs = require("fs");
+          const m = require("./.next/app-build-manifest.json");
+          const route = "/writing/hello-type/page";
+          const files = new Set(
+            [...(m.pages["/layout"] ?? []), ...m.pages[route]].filter((f) => f.endsWith(".js")),
+          );
+          let total = 0;
+          for (const f of files) total += gzipSync(fs.readFileSync(".next/" + f), { level: 9 }).length;
+          const kb = (total / 1024).toFixed(1);
+          console.log(`Article route JS: ${kb} KB gzip (${files.size} files)`);
+          if (total > 115 * 1024) {
+            console.log(`::error::JS budget exceeded: ${kb} KB > 115 KB`);
+            process.exit(1);
+          }
+          '
