@@ -8,3 +8,7 @@ build
 *.tsbuildinfo
 next-env.d.ts
 coverage
+# Sanity CLI artifacts — except the extracted schema, which typegen needs
+# when no project is configured (CI, fresh clones).
+.sanity/*
+!.sanity/schema.json

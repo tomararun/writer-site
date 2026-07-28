@@ -15,6 +15,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Regenerate Sanity types from the schema + GROQ queries; the typecheck
+      # then fails if the committed types have drifted from the code.
+      - name: Typegen
+        run: npm run typegen
       - name: Typecheck
         run: npm run typecheck
       - name: Lint
