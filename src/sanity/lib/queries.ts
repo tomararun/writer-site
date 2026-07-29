@@ -85,6 +85,9 @@ export const postBySlugQuery = defineQuery(`
     "author": author->{name, "slug": slug.current, avatar, bio},
     "category": category->{title, "slug": slug.current},
     "tags": tags[]->{title, "slug": slug.current},
+    "tagIds": tags[]._ref,
+    "categoryId": category._ref,
+    "seriesId": series.series._ref,
     "series": series{
       order,
       "series": series->{
@@ -195,12 +198,38 @@ export const journalEntryBySlugQuery = defineQuery(`
     },
     reflection, publishedAt, status, readingTime, wordCount,
     "topics": topics[]->{title, "slug": slug.current},
+    "topicIds": topics[]._ref,
     "resources": resources[]->{_id, title, kind, url, author, note, rating},
     codeSnippets,
     "relatedEntries": relatedEntries[]->{
       _id, title, "slug": slug.current, entryDate,
       "topics": topics[]->{title, "slug": slug.current}
     }
+  }
+`);
+
+/** §6.8 — prev/next journal entries by entry date, always present. */
+export const prevNextJournalQuery = defineQuery(`
+{
+  "previous": *[
+    _type == "journalEntry" && status == "published" && publishedAt <= now() &&
+    entryDate < $entryDate
+  ] | order(entryDate desc)[0]{title, "slug": slug.current, entryDate},
+  "next": *[
+    _type == "journalEntry" && status == "published" && publishedAt <= now() &&
+    entryDate > $entryDate
+  ] | order(entryDate asc)[0]{title, "slug": slug.current, entryDate}
+}
+`);
+
+/** §6.8 related — entries sharing a topic, for src/lib/related.ts scoring. */
+export const journalRelatedCandidatesQuery = defineQuery(`
+  *[
+    _type == "journalEntry" && status == "published" && publishedAt <= now() &&
+    _id != $id && count((topics[]._ref)[@ in $topicIds]) > 0
+  ]{
+    _id, title, "slug": slug.current, entryDate, mood, publishedAt,
+    "tagIds": topics[]._ref
   }
 `);
 

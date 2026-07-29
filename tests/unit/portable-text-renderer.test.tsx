@@ -42,13 +42,8 @@ const body = [
       { _type: "footnote", _key: "f1", body: [block("normal", "The footnote text.", "fb1")] },
     ],
   },
-  {
-    _type: "codeBlock",
-    _key: "c1",
-    language: "typescript",
-    filename: "a.ts",
-    code: "const x = 1;",
-  },
+  // codeBlock is excluded here: it is an async server component (shiki runs
+  // at build/render time on the server) and cannot render in a jsdom test.
   { _type: "pullQuote", _key: "p1", text: "The lifted sentence.", emphasis: true },
   {
     _type: "calloutBox",
@@ -89,13 +84,19 @@ describe("PortableTextRenderer", () => {
     expect(screen.queryByRole("link", { name: "a dead one" })).toBeNull();
     expect(document.body.textContent).toContain("a dead one");
 
-    // Footnote: numbered marker + body.
-    expect(screen.getByText("1")).not.toBeNull();
-    expect(screen.getByText("The footnote text.")).not.toBeNull();
-
-    // Code block with filename.
-    expect(screen.getByText("const x = 1;")).not.toBeNull();
-    expect(screen.getByText("a.ts")).not.toBeNull();
+    // Footnote: numbered sup marker inside the paragraph, plus the mobile
+    // disclosure hoisted AFTER it (never <details> inside <p>).
+    const marker = screen.getByRole("link", { name: "Footnote 1" });
+    expect(marker.closest("p")).not.toBeNull();
+    expect(screen.getByText("The footnote text.").closest("details")).not.toBeNull();
+    expect(
+      screen.getByText("The footnote text.").closest("p")?.closest("details"),
+    ).not.toBeNull();
+    expect(document.querySelector("p details")).toBeNull();
+    // Bidirectional: the disclosure links back to the reference.
+    expect(screen.getByRole("link", { name: "Return to text" }).getAttribute("href")).toBe(
+      "#fnref-1",
+    );
 
     // Pull quote, callout (variant label + title + body), embed link card.
     expect(screen.getByText("The lifted sentence.")).not.toBeNull();

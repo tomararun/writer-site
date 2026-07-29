@@ -2,24 +2,32 @@ import Link from "next/link";
 import { PortableText, type PortableTextComponents } from "next-sanity";
 import type { PortableTextBlock } from "next-sanity";
 import { slugify } from "@/lib/slugify";
+import { extractFootnotes, type FootnoteRef } from "@/lib/portable-text";
 import { CalloutBox, type CalloutBoxValue } from "./CalloutBox";
 import { CodeBlock, type CodeBlockValue } from "./CodeBlock";
 import { Embed, type EmbedValue } from "./Embed";
 import { Figure, type FigureValue } from "./Figure";
-import { Footnote, type FootnoteValue } from "./Footnote";
+import { FootnoteDisclosure, FootnoteMarker } from "./Footnote";
 import { PullQuote, type PullQuoteValue } from "./PullQuote";
 
 /**
- * SPEC Phase 1 — the renderer for `bodyText`: every §3.2 object that can
- * appear in a body, plus heading anchors and both link marks.
+ * SPEC Phase 1/2 — the renderer for `bodyText`: every §3.2 object that can
+ * appear in a body, heading anchors, both link marks, and the two-part
+ * footnote rendering.
  *
  * Wrap the output in <Prose> (Phase 0) — this component renders content, the
  * typography layer styles it.
  *
- * Components are built PER RENDER because two pieces of document-level state
- * exist: heading anchors are de-duplicated with the same counting rule as
+ * Components are built PER RENDER because document-level state exists:
+ * heading anchors are de-duplicated with the same counting rule as
  * `extractHeadings` (so the §3.5 `headings[]` field always points at real
- * ids), and footnotes are numbered in reading order.
+ * ids), and footnote numbers come from a single `extractFootnotes` pre-pass
+ * shared with the margin layer and the rail ticks.
+ *
+ * Footnotes render in two places from one number: an inline sup marker at
+ * the reference, and — because <details> cannot live inside <p> — a
+ * disclosure AFTER the paragraph that references it, hidden at ≥lg where the
+ * margin note (FootnoteMargin) takes over.
  */
 
 type InternalLinkMark = {
@@ -54,9 +62,23 @@ function spanTextOf(children: unknown): string {
     .join("");
 }
 
-function buildComponents(): PortableTextComponents {
+function footnotesInBlock(
+  value: PortableTextBlock | undefined,
+  byKey: Map<string, FootnoteRef>,
+): FootnoteRef[] {
+  if (!value || !Array.isArray(value.children)) return [];
+  const found: FootnoteRef[] = [];
+  for (const child of value.children) {
+    const key = (child as { _type?: string; _key?: string })?._key;
+    if ((child as { _type?: string })?._type === "footnote" && key && byKey.has(key)) {
+      found.push(byKey.get(key)!);
+    }
+  }
+  return found;
+}
+
+function buildComponents(footnotesByKey: Map<string, FootnoteRef>): PortableTextComponents {
   const seenAnchors = new Map<string, number>();
-  let footnoteNumber = 0;
 
   function anchorFor(children: React.ReactNode, value?: PortableTextBlock): string {
     // Anchor from the raw block text (matches extractHeadings), not the
@@ -70,6 +92,18 @@ function buildComponents(): PortableTextComponents {
 
   return {
     block: {
+      normal: ({ children, value }) => {
+        const notes = footnotesInBlock(value, footnotesByKey);
+        if (notes.length === 0) return <p>{children}</p>;
+        return (
+          <>
+            <p>{children}</p>
+            {notes.map((note) => (
+              <FootnoteDisclosure key={note._key} note={note} />
+            ))}
+          </>
+        );
+      },
       h2: ({ children, value }) => <h2 id={anchorFor(children, value)}>{children}</h2>,
       h3: ({ children, value }) => <h3 id={anchorFor(children, value)}>{children}</h3>,
       h4: ({ children }) => <h4>{children}</h4>,
@@ -81,9 +115,10 @@ function buildComponents(): PortableTextComponents {
       pullQuote: ({ value }: { value: PullQuoteValue }) => <PullQuote value={value} />,
       calloutBox: ({ value }: { value: CalloutBoxValue }) => <CalloutBox value={value} />,
       embed: ({ value }: { value: EmbedValue }) => <Embed value={value} />,
-      footnote: ({ value }: { value: FootnoteValue }) => {
-        footnoteNumber += 1;
-        return <Footnote value={value} index={footnoteNumber} />;
+      footnote: ({ value }: { value: { _key?: string } }) => {
+        const note = value._key ? footnotesByKey.get(value._key) : undefined;
+        if (!note) return null;
+        return <FootnoteMarker note={note} />;
       },
     },
     marks: {
@@ -113,5 +148,7 @@ function buildComponents(): PortableTextComponents {
 }
 
 export function PortableTextRenderer({ value }: { value: PortableTextBlock[] }) {
-  return <PortableText value={value} components={buildComponents()} />;
+  const footnotes = extractFootnotes(value);
+  const byKey = new Map(footnotes.map((note) => [note._key, note]));
+  return <PortableText value={value} components={buildComponents(byKey)} />;
 }

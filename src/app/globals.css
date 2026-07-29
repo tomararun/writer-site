@@ -79,6 +79,33 @@ html[data-theme="dark"] {
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
+   Syntax tokens (Phase 2) — consumed by shiki's css-variables theme.
+   Every value derives from the palette above, so code recolours with the
+   theme automatically and the "no hardcoded hex outside this file" rule holds.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  --shiki-foreground: var(--ink);
+  --shiki-background: transparent;
+  --shiki-token-comment: var(--ink-muted);
+  --shiki-token-keyword: var(--accent);
+  --shiki-token-function: var(--ink);
+  --shiki-token-constant: var(--ink);
+  --shiki-token-parameter: var(--ink-muted);
+  --shiki-token-punctuation: var(--ink-muted);
+  --shiki-token-link: var(--accent);
+  /* Strings sit between ink and accent — legible, quieter than keywords. */
+  --shiki-token-string: color-mix(in srgb, var(--accent) 55%, var(--ink));
+  --shiki-token-string-expression: color-mix(in srgb, var(--accent) 55%, var(--ink));
+}
+
+/* §6.4 responsive — ≥xl the margin track widens; the prose measure does not. */
+@media (min-width: 80rem) {
+  :root {
+    --track-margin: 20rem;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
    2. Tailwind theme bridge
    `inline` is required: these reference custom properties that change at
    runtime, so Tailwind must emit var() references rather than resolved values.
@@ -279,6 +306,55 @@ html[data-theme="dark"] {
     }
   }
 
+  /* Motion #1 — article load: rail draws (in MarginRail), then content
+     fades up staggered 40ms per top-level block. Runs once per mount. */
+  @media (prefers-reduced-motion: no-preference) {
+    .article-load > * {
+      animation: block-rise 320ms ease-out both;
+      animation-delay: 240ms;
+    }
+    .article-load > *:nth-child(1) {
+      animation-delay: 240ms;
+    }
+    .article-load > *:nth-child(2) {
+      animation-delay: 280ms;
+    }
+    .article-load > *:nth-child(3) {
+      animation-delay: 320ms;
+    }
+    .article-load > *:nth-child(4) {
+      animation-delay: 360ms;
+    }
+    .article-load > *:nth-child(5) {
+      animation-delay: 400ms;
+    }
+    .article-load > *:nth-child(n + 6) {
+      animation-delay: 440ms;
+    }
+  }
+
+  /* Motion #3 — card hover: the hairline beneath the title extends
+     left-to-right over 180ms. No lift, no shadow, no scale. */
+  .card-rule {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 2px;
+  }
+  .card-rule::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1px;
+    background-color: var(--ink-muted);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 180ms ease;
+  }
+  a:hover .card-rule::after,
+  a:focus-visible .card-rule::after {
+    transform: scaleX(1);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -287,6 +363,7 @@ html[data-theme="dark"] {
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
+      animation-delay: 0ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;

@@ -7,7 +7,7 @@ import { apiVersion, dataset, projectId, studioBasePath } from "@/sanity/env";
 import { DERIVED_FIELD_TYPES, PREVIEWABLE_TYPES, schemaTypes } from "@/sanity/schemas";
 import { structure } from "@/sanity/structure";
 import { withComputeDerivedFields } from "@/sanity/actions/computeDerivedFields";
-import { openPreviewAction } from "@/sanity/actions/openPreview";
+import { OpenPreviewAction } from "@/sanity/actions/openPreview";
 
 /**
  * The embedded Studio (SPEC §5.5), mounted at /studio by
@@ -48,7 +48,7 @@ export default defineConfig({
 
       // §5.5 — "Open preview" on everything with a public page.
       if ((PREVIEWABLE_TYPES as readonly string[]).includes(context.schemaType)) {
-        result = [...result, openPreviewAction];
+        result = [...result, OpenPreviewAction];
       }
 
       // The singleton cannot be deleted or duplicated.

@@ -5,17 +5,18 @@ Built to the specification in [`docs/SPEC.md`](docs/SPEC.md).
 
 ## Status
 
-**Phase 1 complete and verified.** Per-phase notes:
+**Phase 2 complete and verified.** Per-phase notes:
 [`docs/PHASE-0-NOTES.md`](docs/PHASE-0-NOTES.md),
-[`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md) — each lists what was built,
+[`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md),
+[`docs/PHASE-2-NOTES.md`](docs/PHASE-2-NOTES.md) — each lists what was built,
 what was verified, and the decisions that deviate from the spec.
 
 | Phase | Scope                                                       | Status  |
 | ----- | ----------------------------------------------------------- | ------- |
 | 0     | Foundations: tokens, fonts, type, primitives, shell, CI     | ✅ Done |
 | 1     | Sanity schemas, Studio, typed GROQ, Portable Text renderers | ✅ Done |
-| 2     | Article template, margin rail, footnotes, preview           | ⬜ Next |
-| 3     | Home + four index pages + facet pages                       | ⬜      |
+| 2     | Article template, margin rail, footnotes, preview           | ✅ Done |
+| 3     | Home + four index pages + facet pages                       | ⬜ Next |
 | 4     | Case study template                                         | ⬜      |
 | 5     | Postgres, newsletter double opt-in, contact form            | ⬜      |
 | 6     | Search, command palette, archive                            | ⬜      |
@@ -30,16 +31,20 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open http://localhost:3000. Three routes exist:
+Open http://localhost:3000. The routes:
 
-- `/` — type specimen. Verifies the scale and palette in both themes. Replaced in Phase 3.
-- `/writing/hello-type` — article grid. Verifies the rail/prose/margin structure. Replaced in Phase 2.
-- `/studio` — the embedded Sanity Studio (Phase 1). Needs a Sanity project:
-  follow "Connect your Sanity project" in
+- `/` — type specimen (noindex placeholder). Replaced by the real home page in Phase 3.
+- `/writing/[slug]` — the full §6.4 article template: margin rail, footnotes,
+  code blocks with copy, share row, series nav, related, prev/next.
+- `/journal/[slug]` — the §6.8 journal entry template.
+- `/studio` — the embedded Sanity Studio. Needs a Sanity project: follow
+  "Connect your Sanity project" in
   [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md), then `npm run seed` to fill
   the development dataset.
 
-The two verification routes are `noindex` and labelled in the UI as placeholders.
+Draft preview: "Open preview" in the Studio enables Next.js draft mode via a
+short-lived secret; a banner with an exit link marks the session. Requires
+`SANITY_API_READ_TOKEN` in `.env.local`.
 
 ## Scripts
 

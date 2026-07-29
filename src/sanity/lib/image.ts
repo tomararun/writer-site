@@ -1,32 +1,20 @@
 import { createImageUrlBuilder, type SanityImageSource } from "@sanity/image-url";
-import type { ImageLoader } from "next/image";
 import { dataset, projectId } from "../env";
 
 /**
  * SPEC §5.6 — images are served by the Sanity CDN with transform params;
  * Next.js must NOT re-optimise them (that would double-process every image
- * through Vercel's optimiser).
+ * through Vercel's optimiser). `SanityImage` builds a server-rendered
+ * <img srcset> from these params directly — see its doc for why it doesn't
+ * go through next/image (the client runtime doesn't fit the JS budget).
  */
 
 const builder = createImageUrlBuilder({ projectId, dataset });
 
-/** URL builder for places that need a concrete URL (OG images, plain <img>). */
+/** URL builder for places that need a concrete URL (OG images, JSON-LD). */
 export function urlFor(source: SanityImageSource) {
   return builder.image(source).auto("format").fit("max");
 }
-
-/**
- * §5.6 — the custom `next/image` loader: maps width/quality onto Sanity CDN
- * params. Passed via the `loader` prop by `SanityImage`.
- */
-export const sanityImageLoader: ImageLoader = ({ src, width, quality }) => {
-  const url = new URL(src);
-  url.searchParams.set("w", String(width));
-  url.searchParams.set("q", String(quality ?? 75));
-  url.searchParams.set("auto", "format");
-  url.searchParams.set("fit", "max");
-  return url.toString();
-};
 
 /**
  * §5.6 — art direction: `figure.layout` drives the `sizes` attribute so the

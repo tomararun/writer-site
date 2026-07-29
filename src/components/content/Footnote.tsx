@@ -1,35 +1,54 @@
 import { PortableText } from "next-sanity";
 import type { PortableTextBlock } from "next-sanity";
-
-export type FootnoteValue = {
-  _key?: string;
-  id?: string | null;
-  body?: PortableTextBlock[] | null;
-};
+import type { FootnoteRef } from "@/lib/portable-text";
 
 /**
- * SPEC §3.2 — the footnote's Phase 1 presentation: a numbered superscript
- * marker followed by the note inline, set small and muted. Everything here is
- * phrasing content — a footnote lives INSIDE a paragraph, so block elements
- * (and <details>) are not allowed.
+ * SPEC §6.4 — footnotes have two presentations sharing one numbering
+ * (`extractFootnotes`):
  *
- * Phase 2 replaces the inline note with the two real presentations: a margin
- * note at the reference's offset on wide screens, a tap-to-open disclosure
- * below 1024px.
+ * - `FootnoteMarker` — the inline superscript reference, always rendered.
+ * - `FootnoteDisclosure` — the below-lg presentation: a numbered <details>
+ *   after the paragraph that contains the reference (never inside it —
+ *   <details> is not phrasing content).
+ * - The ≥lg margin note lives in `FootnoteMargin` (client), positioned at the
+ *   reference's document offset.
  */
-export function Footnote({ value, index }: { value: FootnoteValue; index: number }) {
-  const anchor = value.id || `fn-${value._key ?? index}`;
 
+export function footnoteNoteId(note: FootnoteRef): string {
+  return note.id ?? `fn-${note.number}`;
+}
+
+export function footnoteRefId(note: FootnoteRef): string {
+  return `fnref-${note.number}`;
+}
+
+export function FootnoteMarker({ note }: { note: FootnoteRef }) {
   return (
-    <span id={anchor}>
-      <sup>
-        <a href={`#${anchor}`} aria-label={`Footnote ${index}`}>
-          {index}
+    <sup id={footnoteRefId(note)}>
+      <a
+        href={`#${footnoteNoteId(note)}`}
+        aria-label={`Footnote ${note.number}`}
+        aria-describedby={footnoteNoteId(note)}
+      >
+        {note.number}
+      </a>
+    </sup>
+  );
+}
+
+export function FootnoteDisclosure({ note }: { note: FootnoteRef }) {
+  return (
+    <details id={footnoteNoteId(note)} className="footnote-disclosure lg:hidden">
+      <summary>
+        <span aria-hidden="true">{note.number}. </span>
+        <span>Footnote {note.number}</span>
+      </summary>
+      <div className="footnote-body">
+        <PortableText value={(note.body ?? []) as PortableTextBlock[]} />{" "}
+        <a href={`#${footnoteRefId(note)}`} aria-label="Return to text">
+          ↩
         </a>
-      </sup>
-      <span className="mx-1 font-mono text-[0.72em] text-ink-muted [&_p]:inline">
-        (<PortableText value={value.body ?? []} />)
-      </span>
-    </span>
+      </div>
+    </details>
   );
 }

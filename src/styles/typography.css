@@ -246,6 +246,48 @@
   margin-bottom: 0.7em;
 }
 
+/* ── Code blocks with chrome (Phase 2) ───────────────────────────────────── */
+.prose .code-block {
+  margin: 2.2em 0;
+}
+.prose .code-block pre {
+  margin: 0;
+}
+.prose .code-block figcaption {
+  margin-top: 0.7em;
+}
+/* Shiki emits one span per line; highlighted lines get a quiet accent wash. */
+.prose pre .line.highlighted-line {
+  display: inline-block;
+  width: 100%;
+  background-color: color-mix(in srgb, var(--accent) 9%, transparent);
+}
+
+/* ── Footnote disclosures (Phase 2, below-lg presentation) ───────────────── */
+.prose .footnote-disclosure {
+  margin: 0.7em 0;
+  border-top: 0;
+  border-bottom: 0;
+  border-left: 2px solid var(--rule);
+  padding: 0.2em 0 0.2em 1em;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+.prose .footnote-disclosure summary {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+.prose .footnote-disclosure[open] summary {
+  margin-bottom: 0.4em;
+}
+.prose .footnote-disclosure .footnote-body p {
+  display: inline;
+}
+
 /* ── First paragraph after the deck gets no indent but slightly larger ─────── */
 .prose > p:first-of-type {
   font-size: 1.02em;

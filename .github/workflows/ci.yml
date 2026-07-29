@@ -47,7 +47,7 @@ jobs:
           const { gzipSync } = require("zlib");
           const fs = require("fs");
           const m = require("./.next/app-build-manifest.json");
-          const route = "/writing/hello-type/page";
+          const route = "/writing/[slug]/page";
           const files = new Set(
             [...(m.pages["/layout"] ?? []), ...m.pages[route]].filter((f) => f.endsWith(".js")),
           );

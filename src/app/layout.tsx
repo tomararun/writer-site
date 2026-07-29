@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "@/styles/typography.css";
+import { PreviewBanner } from "@/components/layout/PreviewBanner";
 import { Shell } from "@/components/layout/Shell";
 import { fontVariables } from "@/lib/fonts";
 import { themeScript } from "@/lib/theme-script";
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className={fontVariables}>
+        <PreviewBanner />
         <Shell>{children}</Shell>
       </body>
     </html>

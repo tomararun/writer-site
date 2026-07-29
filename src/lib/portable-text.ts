@@ -80,6 +80,45 @@ export function countWordsInPortableText(body: unknown): number {
   return text.split(/\s+/u).filter(Boolean).length;
 }
 
+export type FootnoteRef = {
+  /** The inline object's _key — stable across server and client renders. */
+  _key: string;
+  /** Author-provided anchor id, if any. */
+  id: string | null;
+  /** 1-based number in reading order. */
+  number: number;
+  /** The note's Portable Text body. */
+  body: unknown;
+};
+
+/**
+ * SPEC §6.4 — footnotes in reading order. The single source of numbering:
+ * the inline reference, the mobile disclosure, the margin note and the rail
+ * tick all consume this list, so they can never disagree about which note
+ * is "3".
+ */
+export function extractFootnotes(body: unknown): FootnoteRef[] {
+  if (!Array.isArray(body)) return [];
+  const notes: FootnoteRef[] = [];
+  for (const raw of body) {
+    if (typeof raw !== "object" || raw === null) continue;
+    const block = raw as PortableTextBlock;
+    if (block._type !== "block" || !Array.isArray(block.children)) continue;
+    for (const child of block.children) {
+      if (typeof child !== "object" || child === null) continue;
+      const node = child as { _type?: string; _key?: string; id?: string; body?: unknown };
+      if (node._type !== "footnote") continue;
+      notes.push({
+        _key: node._key ?? `fn-${notes.length + 1}`,
+        id: typeof node.id === "string" && node.id ? node.id : null,
+        number: notes.length + 1,
+        body: node.body,
+      });
+    }
+  }
+  return notes;
+}
+
 /**
  * SPEC §3.5 — `headings[]`: h2/h3 with slugified anchors, consumed by the
  * margin rail and the table of contents. Anchors are de-duplicated with a

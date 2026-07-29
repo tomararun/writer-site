@@ -61,8 +61,8 @@ export default function TypeSpecimenPage() {
         <p className="mt-1 text-ink-muted">
           Not the home page. Check the type scale in both themes at 320px, 768px and 1440px,
           then run Lighthouse. Phase 3 replaces this file with the real home page.{" "}
-          <Link href="/writing/hello-type" className="text-accent underline">
-            The article grid is here →
+          <Link href="/writing/the-66-character-rule" className="text-accent underline">
+            The article template is here → (needs the seeded dataset)
           </Link>
         </p>
       </div>
