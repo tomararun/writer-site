@@ -912,11 +912,24 @@ export type SettingsQueryResult = {
   } | null;
 } | null;
 // Variable: homeQuery
-// Query: {  "settings": *[_type == "siteSettings"][0]{siteName, description},  "featuredPosts": *[    _type == "post" && status == "published" && publishedAt <= now() && featured == true  ] | order(publishedAt desc)[0...3]{    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,    "category": category->{title, "slug": slug.current},    coverImage{alt, caption, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}  },  "featuredCaseStudies": *[    _type == "caseStudy" && status == "published" && publishedAt <= now() && featured == true  ] | order(publishedAt desc)[0...2]{    _id, title, "slug": slug.current, excerpt, client, stack, publishedAt,    "metrics": metrics[0...3]{label, value, delta},    coverImage{alt, caption, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}  },  "latestJournal": *[    _type == "journalEntry" && status == "published" && publishedAt <= now()  ] | order(entryDate desc)[0...5]{    _id, title, "slug": slug.current, entryDate, mood,    "topics": topics[]->{title, "slug": slug.current}  },  "latestPosts": *[    _type == "post" && status == "published" && publishedAt <= now()  ] | order(publishedAt desc)[0...5]{    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,    "category": category->{title, "slug": slug.current}  }}
+// Query: {  "settings": *[_type == "siteSettings"][0]{siteName, description},  "author": *[_type == "author"][0]{    name,    "avatar": avatar{hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}  },  "featuredPosts": *[    _type == "post" && status == "published" && publishedAt <= now() && featured == true  ] | order(publishedAt desc)[0...3]{    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,    "category": category->{title, "slug": slug.current},    coverImage{alt, caption, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}  },  "featuredCaseStudies": *[    _type == "caseStudy" && status == "published" && publishedAt <= now() && featured == true  ] | order(publishedAt desc)[0...2]{    _id, title, "slug": slug.current, excerpt, client, stack, publishedAt,    "metrics": metrics[0...3]{label, value, delta},    coverImage{alt, caption, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}  },  "latestJournal": *[    _type == "journalEntry" && status == "published" && publishedAt <= now()  ] | order(entryDate desc)[0...5]{    _id, title, "slug": slug.current, entryDate, mood,    "topics": topics[]->{title, "slug": slug.current}  },  "latestPosts": *[    _type == "post" && status == "published" && publishedAt <= now()  ] | order(publishedAt desc)[0...5]{    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,    "category": category->{title, "slug": slug.current}  }}
 export type HomeQueryResult = {
   settings: {
     siteName: string | null;
     description: string | null;
+  } | null;
+  author: {
+    name: string | null;
+    avatar: {
+      hotspot: SanityImageHotspot | null;
+      crop: SanityImageCrop | null;
+      asset: {
+        _id: string;
+        url: string | null;
+        dimensions: SanityImageDimensions | null;
+        lqip: string | null;
+      } | null;
+    } | null;
   } | null;
   featuredPosts: Array<{
     _id: string;
@@ -1207,7 +1220,7 @@ export type PostBySlugQueryResult = {
   }> | null;
 } | null;
 // Variable: postIndexQuery
-// Query: {  "total": count(*[    _type == "post" && status == "published" && publishedAt <= now() &&    ($category == null || category->slug.current == $category) &&    ($tag == null || $tag in tags[]->slug.current) &&    ($kind == null || kind == $kind)  ]),  "posts": *[    _type == "post" && status == "published" && publishedAt <= now() &&    ($category == null || category->slug.current == $category) &&    ($tag == null || $tag in tags[]->slug.current) &&    ($kind == null || kind == $kind)  ] | order(publishedAt desc)[$offset...$end]{    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,    "category": category->{title, "slug": slug.current},    "tags": tags[]->{title, "slug": slug.current},    coverImage{alt, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}  }}
+// Query: {  "total": count(*[    _type == "post" && status == "published" && publishedAt <= now() &&    ($category == null || category->slug.current == $category) &&    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&    ($kind == null || kind == $kind)  ]),  "posts": *[    _type == "post" && status == "published" && publishedAt <= now() &&    ($category == null || category->slug.current == $category) &&    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&    ($kind == null || kind == $kind)  ] | order(publishedAt desc)[$offset...$end]{    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,    "category": category->{title, "slug": slug.current},    "tags": tags[]->{title, "slug": slug.current},    coverImage{alt, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}  }}
 export type PostIndexQueryResult = {
   total: number;
   posts: Array<{
@@ -1241,6 +1254,103 @@ export type PostIndexQueryResult = {
     } | null;
   }>;
 };
+// Variable: postIndexOldestQuery
+// Query: {  "total": count(*[    _type == "post" && status == "published" && publishedAt <= now() &&    ($category == null || category->slug.current == $category) &&    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&    ($kind == null || kind == $kind)  ]),  "posts": *[    _type == "post" && status == "published" && publishedAt <= now() &&    ($category == null || category->slug.current == $category) &&    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&    ($kind == null || kind == $kind)  ] | order(publishedAt asc)[$offset...$end]{    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,    "category": category->{title, "slug": slug.current},    "tags": tags[]->{title, "slug": slug.current},    coverImage{alt, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}  }}
+export type PostIndexOldestQueryResult = {
+  total: number;
+  posts: Array<{
+    _id: string;
+    title: string | null;
+    slug: string | null;
+    kind: "essay" | "opinion" | "reflection" | "tutorial" | null;
+    excerpt: string | null;
+    publishedAt: string | null;
+    readingTime: number | null;
+    featured: boolean | null;
+    category: {
+      title: string | null;
+      slug: string | null;
+    } | null;
+    tags: Array<{
+      title: string | null;
+      slug: string | null;
+    }> | null;
+    coverImage: {
+      alt: string | null;
+      layout: "full" | "inline" | "side" | "wide" | null;
+      hotspot: SanityImageHotspot | null;
+      crop: SanityImageCrop | null;
+      asset: {
+        _id: string;
+        url: string | null;
+        dimensions: SanityImageDimensions | null;
+        lqip: string | null;
+      } | null;
+    } | null;
+  }>;
+};
+// Variable: postIndexLongestQuery
+// Query: {  "total": count(*[    _type == "post" && status == "published" && publishedAt <= now() &&    ($category == null || category->slug.current == $category) &&    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&    ($kind == null || kind == $kind)  ]),  "posts": *[    _type == "post" && status == "published" && publishedAt <= now() &&    ($category == null || category->slug.current == $category) &&    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&    ($kind == null || kind == $kind)  ] | order(coalesce(readingTime, 0) desc, publishedAt desc)[$offset...$end]{    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,    "category": category->{title, "slug": slug.current},    "tags": tags[]->{title, "slug": slug.current},    coverImage{alt, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}  }}
+export type PostIndexLongestQueryResult = {
+  total: number;
+  posts: Array<{
+    _id: string;
+    title: string | null;
+    slug: string | null;
+    kind: "essay" | "opinion" | "reflection" | "tutorial" | null;
+    excerpt: string | null;
+    publishedAt: string | null;
+    readingTime: number | null;
+    featured: boolean | null;
+    category: {
+      title: string | null;
+      slug: string | null;
+    } | null;
+    tags: Array<{
+      title: string | null;
+      slug: string | null;
+    }> | null;
+    coverImage: {
+      alt: string | null;
+      layout: "full" | "inline" | "side" | "wide" | null;
+      hotspot: SanityImageHotspot | null;
+      crop: SanityImageCrop | null;
+      asset: {
+        _id: string;
+        url: string | null;
+        dimensions: SanityImageDimensions | null;
+        lqip: string | null;
+      } | null;
+    } | null;
+  }>;
+};
+// Variable: writingFilterOptionsQuery
+// Query: {  "categories": *[_type == "category" && !(_id in path("drafts.**"))]    | order(title asc){title, "slug": slug.current},  "tags": *[    _type == "tag" && !(_id in path("drafts.**")) &&    count(*[_type == "post" && status == "published" && publishedAt <= now() && references(^._id)]) > 0  ] | order(title asc){title, "slug": slug.current}}
+export type WritingFilterOptionsQueryResult = {
+  categories: Array<{
+    title: string | null;
+    slug: string | null;
+  }>;
+  tags: Array<{
+    title: string | null;
+    slug: string | null;
+  }>;
+};
+// Variable: journalTopicsQuery
+// Query: *[    _type == "tag" && !(_id in path("drafts.**")) &&    count(*[_type == "journalEntry" && status == "published" && publishedAt <= now() && references(^._id)]) > 0  ] | order(title asc){title, "slug": slug.current}
+export type JournalTopicsQueryResult = Array<{
+  title: string | null;
+  slug: string | null;
+}>;
+// Variable: tagSlugsQuery
+// Query: *[_type == "tag" && !(_id in path("drafts.**"))].slug.current
+export type TagSlugsQueryResult = Array<string | null>;
+// Variable: categorySlugsQuery
+// Query: *[_type == "category" && !(_id in path("drafts.**"))].slug.current
+export type CategorySlugsQueryResult = Array<string | null>;
+// Variable: seriesSlugsQuery
+// Query: *[_type == "series" && !(_id in path("drafts.**"))].slug.current
+export type SeriesSlugsQueryResult = Array<string | null>;
 // Variable: prevNextPostQuery
 // Query: {  "previous": *[    _type == "post" && status == "published" && publishedAt <= now() &&    publishedAt < $publishedAt  ] | order(publishedAt desc)[0]{title, "slug": slug.current},  "next": *[    _type == "post" && status == "published" && publishedAt <= now() &&    publishedAt > $publishedAt  ] | order(publishedAt asc)[0]{title, "slug": slug.current}}
 export type PrevNextPostQueryResult = {
@@ -1905,10 +2015,17 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     '\n  *[_type == "siteSettings"][0]{\n    siteName,\n    description,\n    nav[]{label, href, kind},\n    socialLinks[]{label, href, kind, rel},\n    defaultSeo,\n    flags\n  }\n': SettingsQueryResult;
-    '\n{\n  "settings": *[_type == "siteSettings"][0]{siteName, description},\n  "featuredPosts": *[\n    _type == "post" && status == "published" && publishedAt <= now() && featured == true\n  ] | order(publishedAt desc)[0...3]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n    "category": category->{title, "slug": slug.current},\n    coverImage{alt, caption, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  },\n  "featuredCaseStudies": *[\n    _type == "caseStudy" && status == "published" && publishedAt <= now() && featured == true\n  ] | order(publishedAt desc)[0...2]{\n    _id, title, "slug": slug.current, excerpt, client, stack, publishedAt,\n    "metrics": metrics[0...3]{label, value, delta},\n    coverImage{alt, caption, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  },\n  "latestJournal": *[\n    _type == "journalEntry" && status == "published" && publishedAt <= now()\n  ] | order(entryDate desc)[0...5]{\n    _id, title, "slug": slug.current, entryDate, mood,\n    "topics": topics[]->{title, "slug": slug.current}\n  },\n  "latestPosts": *[\n    _type == "post" && status == "published" && publishedAt <= now()\n  ] | order(publishedAt desc)[0...5]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n    "category": category->{title, "slug": slug.current}\n  }\n}\n': HomeQueryResult;
+    '\n{\n  "settings": *[_type == "siteSettings"][0]{siteName, description},\n  "author": *[_type == "author"][0]{\n    name,\n    "avatar": avatar{hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  },\n  "featuredPosts": *[\n    _type == "post" && status == "published" && publishedAt <= now() && featured == true\n  ] | order(publishedAt desc)[0...3]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n    "category": category->{title, "slug": slug.current},\n    coverImage{alt, caption, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  },\n  "featuredCaseStudies": *[\n    _type == "caseStudy" && status == "published" && publishedAt <= now() && featured == true\n  ] | order(publishedAt desc)[0...2]{\n    _id, title, "slug": slug.current, excerpt, client, stack, publishedAt,\n    "metrics": metrics[0...3]{label, value, delta},\n    coverImage{alt, caption, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  },\n  "latestJournal": *[\n    _type == "journalEntry" && status == "published" && publishedAt <= now()\n  ] | order(entryDate desc)[0...5]{\n    _id, title, "slug": slug.current, entryDate, mood,\n    "topics": topics[]->{title, "slug": slug.current}\n  },\n  "latestPosts": *[\n    _type == "post" && status == "published" && publishedAt <= now()\n  ] | order(publishedAt desc)[0...5]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n    "category": category->{title, "slug": slug.current}\n  }\n}\n': HomeQueryResult;
     '\n  *[_type == "post" && status == "published" && publishedAt <= now()].slug.current\n': PostSlugsQueryResult;
     '\n  *[_type == "post" && slug.current == $slug][0]{\n    _id, _type, title, "slug": slug.current, kind, excerpt,\n    "body": body[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    publishedAt, updatedAt, revisionNote, status,\n    readingTime, wordCount, headings,\n    canonicalUrl, seo,\n    "author": author->{name, "slug": slug.current, avatar, bio},\n    "category": category->{title, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    "tagIds": tags[]._ref,\n    "categoryId": category._ref,\n    "seriesId": series.series._ref,\n    "series": series{\n      order,\n      "series": series->{\n        title, "slug": slug.current, description,\n        "posts": *[\n          _type == "post" && status == "published" && publishedAt <= now() &&\n          series.series._ref == ^.^.series.series._ref\n        ] | order(series.order asc){title, "slug": slug.current, "order": series.order}\n      }\n    },\n    coverImage{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    "relatedManual": relatedManual[]->{\n      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n      "category": category->{title, "slug": slug.current}\n    }\n  }\n': PostBySlugQueryResult;
-    '\n{\n  "total": count(*[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tag == null || $tag in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ]),\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tag == null || $tag in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ] | order(publishedAt desc)[$offset...$end]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,\n    "category": category->{title, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    coverImage{alt, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  }\n}\n': PostIndexQueryResult;
+    '\n{\n  "total": count(*[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ]),\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ] | order(publishedAt desc)[$offset...$end]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,\n    "category": category->{title, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    coverImage{alt, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  }\n}\n': PostIndexQueryResult;
+    '\n{\n  "total": count(*[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ]),\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ] | order(publishedAt asc)[$offset...$end]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,\n    "category": category->{title, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    coverImage{alt, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  }\n}\n': PostIndexOldestQueryResult;
+    '\n{\n  "total": count(*[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ]),\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ] | order(coalesce(readingTime, 0) desc, publishedAt desc)[$offset...$end]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,\n    "category": category->{title, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    coverImage{alt, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  }\n}\n': PostIndexLongestQueryResult;
+    '\n{\n  "categories": *[_type == "category" && !(_id in path("drafts.**"))]\n    | order(title asc){title, "slug": slug.current},\n  "tags": *[\n    _type == "tag" && !(_id in path("drafts.**")) &&\n    count(*[_type == "post" && status == "published" && publishedAt <= now() && references(^._id)]) > 0\n  ] | order(title asc){title, "slug": slug.current}\n}\n': WritingFilterOptionsQueryResult;
+    '\n  *[\n    _type == "tag" && !(_id in path("drafts.**")) &&\n    count(*[_type == "journalEntry" && status == "published" && publishedAt <= now() && references(^._id)]) > 0\n  ] | order(title asc){title, "slug": slug.current}\n': JournalTopicsQueryResult;
+    '\n  *[_type == "tag" && !(_id in path("drafts.**"))].slug.current\n': TagSlugsQueryResult;
+    '\n  *[_type == "category" && !(_id in path("drafts.**"))].slug.current\n': CategorySlugsQueryResult;
+    '\n  *[_type == "series" && !(_id in path("drafts.**"))].slug.current\n': SeriesSlugsQueryResult;
     '\n{\n  "previous": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    publishedAt < $publishedAt\n  ] | order(publishedAt desc)[0]{title, "slug": slug.current},\n  "next": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    publishedAt > $publishedAt\n  ] | order(publishedAt asc)[0]{title, "slug": slug.current}\n}\n': PrevNextPostQueryResult;
     '\n  *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    _id != $id && (\n      count((tags[]._ref)[@ in $tagIds]) > 0 ||\n      category._ref == $categoryId ||\n      (defined(series.series._ref) && series.series._ref == $seriesId)\n    )\n  ]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n    "tagIds": tags[]._ref,\n    "categoryId": category._ref,\n    "seriesId": series.series._ref,\n    "category": category->{title, "slug": slug.current}\n  }\n': RelatedCandidatesQueryResult;
     '\n  *[_type == "journalEntry" && status == "published" && publishedAt <= now()].slug.current\n': JournalSlugsQueryResult;

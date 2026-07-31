@@ -6,12 +6,12 @@ import { formatDayMonth, isoDate } from "@/lib/format";
  * a page torn from a notebook; these stay quiet accordingly.
  */
 
-/** §3.3 — "drives a small glyph, no emoji". */
+/** §3.3 / §6.7 mood legend — "↗ breakthrough · ≡ grinding · ✕ stuck · ? curious". */
 const MOOD_GLYPH: Record<string, string> = {
-  breakthrough: "◆",
-  grinding: "▲",
-  stuck: "■",
-  curious: "●",
+  breakthrough: "↗",
+  grinding: "≡",
+  stuck: "✕",
+  curious: "?",
 };
 
 export function MoodGlyph({ mood }: { mood?: string | null }) {

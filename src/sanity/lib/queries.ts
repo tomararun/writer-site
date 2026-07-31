@@ -30,6 +30,11 @@ export const settingsQuery = defineQuery(`
 export const homeQuery = defineQuery(`
 {
   "settings": *[_type == "siteSettings"][0]{siteName, description},
+  "author": *[_type == "author"][0]{
+    name,
+    "avatar": avatar{hotspot, crop,
+      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}
+  },
   "featuredPosts": *[
     _type == "post" && status == "published" && publishedAt <= now() && featured == true
   ] | order(publishedAt desc)[0...3]{
@@ -116,13 +121,13 @@ export const postIndexQuery = defineQuery(`
   "total": count(*[
     _type == "post" && status == "published" && publishedAt <= now() &&
     ($category == null || category->slug.current == $category) &&
-    ($tag == null || $tag in tags[]->slug.current) &&
+    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&
     ($kind == null || kind == $kind)
   ]),
   "posts": *[
     _type == "post" && status == "published" && publishedAt <= now() &&
     ($category == null || category->slug.current == $category) &&
-    ($tag == null || $tag in tags[]->slug.current) &&
+    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&
     ($kind == null || kind == $kind)
   ] | order(publishedAt desc)[$offset...$end]{
     _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,
@@ -132,6 +137,90 @@ export const postIndexQuery = defineQuery(`
       "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}
   }
 }
+`);
+
+/**
+ * §6.3 sort variants — GROQ cannot parameterise `order()`, so the two other
+ * sorts are their own queries with identical filters and projections.
+ */
+export const postIndexOldestQuery = defineQuery(`
+{
+  "total": count(*[
+    _type == "post" && status == "published" && publishedAt <= now() &&
+    ($category == null || category->slug.current == $category) &&
+    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&
+    ($kind == null || kind == $kind)
+  ]),
+  "posts": *[
+    _type == "post" && status == "published" && publishedAt <= now() &&
+    ($category == null || category->slug.current == $category) &&
+    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&
+    ($kind == null || kind == $kind)
+  ] | order(publishedAt asc)[$offset...$end]{
+    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,
+    "category": category->{title, "slug": slug.current},
+    "tags": tags[]->{title, "slug": slug.current},
+    coverImage{alt, layout, hotspot, crop,
+      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}
+  }
+}
+`);
+
+export const postIndexLongestQuery = defineQuery(`
+{
+  "total": count(*[
+    _type == "post" && status == "published" && publishedAt <= now() &&
+    ($category == null || category->slug.current == $category) &&
+    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&
+    ($kind == null || kind == $kind)
+  ]),
+  "posts": *[
+    _type == "post" && status == "published" && publishedAt <= now() &&
+    ($category == null || category->slug.current == $category) &&
+    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&
+    ($kind == null || kind == $kind)
+  ] | order(coalesce(readingTime, 0) desc, publishedAt desc)[$offset...$end]{
+    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,
+    "category": category->{title, "slug": slug.current},
+    "tags": tags[]->{title, "slug": slug.current},
+    coverImage{alt, layout, hotspot, crop,
+      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}
+  }
+}
+`);
+
+/** §6.3 — the filter bar's options: categories, and only tags that are used. */
+export const writingFilterOptionsQuery = defineQuery(`
+{
+  "categories": *[_type == "category" && !(_id in path("drafts.**"))]
+    | order(title asc){title, "slug": slug.current},
+  "tags": *[
+    _type == "tag" && !(_id in path("drafts.**")) &&
+    count(*[_type == "post" && status == "published" && publishedAt <= now() && references(^._id)]) > 0
+  ] | order(title asc){title, "slug": slug.current}
+}
+`);
+
+/** §6.7 — topics that have at least one published journal entry. */
+export const journalTopicsQuery = defineQuery(`
+  *[
+    _type == "tag" && !(_id in path("drafts.**")) &&
+    count(*[_type == "journalEntry" && status == "published" && publishedAt <= now() && references(^._id)]) > 0
+  ] | order(title asc){title, "slug": slug.current}
+`);
+
+/* ── Facet slug lists (generateStaticParams) ──────────────────────────── */
+
+export const tagSlugsQuery = defineQuery(`
+  *[_type == "tag" && !(_id in path("drafts.**"))].slug.current
+`);
+
+export const categorySlugsQuery = defineQuery(`
+  *[_type == "category" && !(_id in path("drafts.**"))].slug.current
+`);
+
+export const seriesSlugsQuery = defineQuery(`
+  *[_type == "series" && !(_id in path("drafts.**"))].slug.current
 `);
 
 /** §6.4 — prev/next by publish date. */

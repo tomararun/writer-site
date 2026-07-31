@@ -192,12 +192,43 @@ export function RelatedGrid({
   );
 }
 
-export function SubscribeBlock() {
+/**
+ * §6.1 / §6.4 — the subscribe slot. Still a link, not a dead input: the real
+ * form with its states arrives with the data layer in Phase 5.
+ */
+export function SubscribeBlock({
+  variant = "inline",
+  heading = "Get the next one by email.",
+  pitch,
+}: {
+  variant?: "inline" | "panel";
+  heading?: string;
+  pitch?: string | null;
+}) {
+  if (variant === "panel") {
+    return (
+      <aside aria-label="Newsletter" className="border border-rule bg-surface p-8 sm:p-10">
+        <p className="max-w-[24ch] font-display text-[var(--text-xl)] font-semibold">
+          {heading}
+        </p>
+        {pitch ? (
+          <p className="mt-3 max-w-[52ch] text-[var(--text-sm)] leading-relaxed text-ink-muted">
+            {pitch}
+          </p>
+        ) : null}
+        <Link
+          href="/newsletter"
+          className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 font-display text-[var(--text-sm)] font-semibold text-paper no-underline transition-colors hover:bg-accent"
+        >
+          Subscribe
+        </Link>
+      </aside>
+    );
+  }
+
   return (
     <aside className="mt-14 border-t border-rule pt-6">
-      <p className="font-display text-[var(--text-md)] font-semibold">
-        Get the next one by email.
-      </p>
+      <p className="font-display text-[var(--text-md)] font-semibold">{heading}</p>
       <Link
         href="/newsletter"
         className="mt-2 inline-block font-display text-[var(--text-sm)] font-semibold text-accent no-underline"

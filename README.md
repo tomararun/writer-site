@@ -5,10 +5,11 @@ Built to the specification in [`docs/SPEC.md`](docs/SPEC.md).
 
 ## Status
 
-**Phase 2 complete and verified.** Per-phase notes:
+**Phase 3 complete and verified.** Per-phase notes:
 [`docs/PHASE-0-NOTES.md`](docs/PHASE-0-NOTES.md),
 [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md),
-[`docs/PHASE-2-NOTES.md`](docs/PHASE-2-NOTES.md) — each lists what was built,
+[`docs/PHASE-2-NOTES.md`](docs/PHASE-2-NOTES.md),
+[`docs/PHASE-3-NOTES.md`](docs/PHASE-3-NOTES.md) — each lists what was built,
 what was verified, and the decisions that deviate from the spec.
 
 | Phase | Scope                                                       | Status  |
@@ -16,8 +17,8 @@ what was verified, and the decisions that deviate from the spec.
 | 0     | Foundations: tokens, fonts, type, primitives, shell, CI     | ✅ Done |
 | 1     | Sanity schemas, Studio, typed GROQ, Portable Text renderers | ✅ Done |
 | 2     | Article template, margin rail, footnotes, preview           | ✅ Done |
-| 3     | Home + four index pages + facet pages                       | ⬜ Next |
-| 4     | Case study template                                         | ⬜      |
+| 3     | Home + four index pages + facet pages                       | ✅ Done |
+| 4     | Case study template                                         | ⬜ Next |
 | 5     | Postgres, newsletter double opt-in, contact form            | ⬜      |
 | 6     | Search, command palette, archive                            | ⬜      |
 | 7     | SEO, feeds, OG images, structured data, analytics           | ⬜      |
@@ -33,10 +34,16 @@ npm run dev
 
 Open http://localhost:3000. The routes:
 
-- `/` — type specimen (noindex placeholder). Replaced by the real home page in Phase 3.
+- `/` — the §6.1 home page: statement, currently strip, selected writing,
+  case studies, journal, subscribe.
+- `/writing` — the index (filters + sort as URL state, cumulative pagination),
+  plus facets: `/writing/tag/[tag]`, `/writing/category/[category]`,
+  `/writing/series/[series]`.
 - `/writing/[slug]` — the full §6.4 article template: margin rail, footnotes,
   code blocks with copy, share row, series nav, related, prev/next.
-- `/journal/[slug]` — the §6.8 journal entry template.
+- `/journal` — the ledger (year strip, sticky month groups, topic filter),
+  `/journal/topic/[topic]`, and `/journal/[slug]` entries.
+- `/case-studies` and `/projects` — the remaining indexes.
 - `/studio` — the embedded Sanity Studio. Needs a Sanity project: follow
   "Connect your Sanity project" in
   [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md), then `npm run seed` to fill
