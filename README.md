@@ -5,7 +5,7 @@ Built to the specification in [`docs/SPEC.md`](docs/SPEC.md).
 
 ## Status
 
-**Phase 3 complete and verified.** Per-phase notes:
+**Phase 5 complete and verified.** Per-phase notes:
 [`docs/PHASE-0-NOTES.md`](docs/PHASE-0-NOTES.md),
 [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md),
 [`docs/PHASE-2-NOTES.md`](docs/PHASE-2-NOTES.md),
