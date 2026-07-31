@@ -18,8 +18,9 @@ import {
 } from "@/components/modules/Journal";
 import { PrevNext } from "@/components/modules/ArticleFooter";
 import { formatDate, formatDayMonth, isoDate } from "@/lib/format";
-import { blogPostingJsonLd } from "@/lib/jsonld";
+import { blogPostingJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import { relatedContent } from "@/lib/related";
+import { ogImageUrl } from "@/lib/seo";
 import { isPubliclyVisible } from "@/lib/visibility";
 import { publishedClient } from "@/sanity/lib/client";
 import { sanityFetch } from "@/sanity/lib/fetch";
@@ -76,7 +77,12 @@ export async function generateMetadata({
     title: `${entry.title ?? dateLabel} — ${dateLabel} — Journal`,
     description,
     alternates: { canonical: `/journal/${slug}` },
-    openGraph: { type: "article", publishedTime: entry.entryDate ?? undefined },
+    openGraph: {
+      type: "article",
+      publishedTime: entry.entryDate ?? undefined,
+      images: [ogImageUrl({ slug, type: "journalEntry", updatedAt: entry.entryDate })],
+    },
+    twitter: { card: "summary_large_image" },
   };
 }
 
@@ -117,15 +123,22 @@ export default async function JournalEntryPage({
   ]);
 
   const url = `${site.url}/journal/${slug}`;
-  const jsonLd = blogPostingJsonLd({
-    url,
-    headline: entry.title ?? formatDate(entry.entryDate),
-    description: entry.reflection,
-    datePublished: entry.entryDate,
-    wordCount: entry.wordCount,
-    keywords: (entry.topics ?? []).map((topic) => topic.title),
-    articleSection: "Journal",
-  });
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: site.name, url: site.url },
+      { name: "Journal", url: `${site.url}/journal` },
+      { name: entry.title ?? formatDate(entry.entryDate), url },
+    ]),
+    blogPostingJsonLd({
+      url,
+      headline: entry.title ?? formatDate(entry.entryDate),
+      description: entry.reflection,
+      datePublished: entry.entryDate,
+      wordCount: entry.wordCount,
+      keywords: (entry.topics ?? []).map((topic) => topic.title),
+      articleSection: "Journal",
+    }),
+  ];
 
   return (
     <Container className="py-12 sm:py-16">

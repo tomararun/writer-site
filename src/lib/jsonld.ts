@@ -88,6 +88,22 @@ export function blogJsonLd(input: {
   };
 }
 
+/** §4.7 — BreadcrumbList on all nested pages. */
+export function breadcrumbJsonLd(
+  crumbs: { name: string; url: string }[],
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: crumbs.map((crumb, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: crumb.name,
+      item: crumb.url,
+    })),
+  };
+}
+
 /**
  * SPEC §6.6 — Article + CreativeWork (with `about` and gallery ImageObjects)
  * for a case study. Returned as an array; the page serialises it directly.

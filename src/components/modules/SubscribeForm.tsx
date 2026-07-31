@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState, useId } from "react";
+import { useActionState, useEffect, useId } from "react";
 import { subscribeToNewsletter } from "@/app/actions/newsletter";
+import { track } from "@/lib/analytics";
 import { idleFormState } from "@/lib/form-state";
 import { cn } from "@/lib/cn";
 import { TurnstileWidget } from "./TurnstileWidget";
@@ -28,6 +29,11 @@ export function SubscribeForm({
 }) {
   const [state, formAction, pending] = useActionState(subscribeToNewsletter, idleFormState);
   const uid = useId();
+
+  /* §5.7 G2 — which placement converts. */
+  useEffect(() => {
+    if (state.status === "success") track("newsletter_subscribe", { source });
+  }, [state.status, source]);
   const emailId = `subscribe-email-${source}-${uid}`;
   const statusId = `subscribe-status-${source}-${uid}`;
 

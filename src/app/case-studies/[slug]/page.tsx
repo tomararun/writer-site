@@ -24,8 +24,14 @@ import {
 } from "@/components/modules/CaseStudy";
 import { Gallery } from "@/components/modules/Gallery";
 import { SectionNav } from "@/components/modules/SectionNav";
+import {
+  ScrollDepthTracker,
+  SectionViewTracker,
+  ViewPing,
+} from "@/components/modules/Trackers";
 import { caseStudySections } from "@/lib/case-study-sections";
-import { caseStudyJsonLd } from "@/lib/jsonld";
+import { breadcrumbJsonLd, caseStudyJsonLd } from "@/lib/jsonld";
+import { buildMetadata, ogImageUrl } from "@/lib/seo";
 import { isPubliclyVisible } from "@/lib/visibility";
 import { publishedClient } from "@/sanity/lib/client";
 import { sanityFetch } from "@/sanity/lib/fetch";
@@ -70,26 +76,24 @@ export async function generateMetadata({
   }
   if (!caseStudy) return {};
 
-  const title = caseStudy.seo?.title ?? `${caseStudy.title} — Case study`;
-  const description = caseStudy.seo?.description ?? caseStudy.excerpt ?? undefined;
-  const coverUrl = caseStudy.coverImage?.asset?.url
-    ? urlFor(caseStudy.coverImage.asset.url).width(1200).url()
-    : undefined;
-
-  return {
-    title: { absolute: title },
-    description,
-    alternates: { canonical: caseStudy.canonicalUrl ?? `/case-studies/${slug}` },
-    openGraph: {
-      type: "article",
-      title,
-      description,
-      publishedTime: caseStudy.publishedAt ?? undefined,
-      modifiedTime: caseStudy.updatedAt ?? undefined,
-      images: coverUrl ? [coverUrl] : undefined,
-    },
-    robots: caseStudy.seo?.noIndex ? { index: false, follow: false } : undefined,
-  };
+  return buildMetadata({
+    title: `${caseStudy.title} — Case study`,
+    absoluteTitle: true,
+    seoTitle: caseStudy.seo?.title,
+    seoDescription: caseStudy.seo?.description,
+    excerpt: caseStudy.excerpt,
+    plainText: caseStudy.plainText,
+    path: `/case-studies/${slug}`,
+    canonicalUrl: caseStudy.canonicalUrl,
+    publishedAt: caseStudy.publishedAt,
+    updatedAt: caseStudy.updatedAt,
+    ogImage: ogImageUrl({
+      slug,
+      type: "caseStudy",
+      updatedAt: caseStudy.updatedAt ?? caseStudy.publishedAt,
+    }),
+    noIndex: caseStudy.seo?.noIndex,
+  });
 }
 
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -123,19 +127,26 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
     .filter(({ step }) => (step.artifacts ?? []).length > 0);
 
   const url = `${site.url}/case-studies/${slug}`;
-  const jsonLd = caseStudyJsonLd({
-    url,
-    headline: caseStudy.title ?? "",
-    description: caseStudy.excerpt,
-    datePublished: caseStudy.publishedAt,
-    dateModified: caseStudy.updatedAt,
-    authorName: caseStudy.author?.name,
-    about: [caseStudy.client, ...(caseStudy.stack ?? [])],
-    images: gallery.map((figure) => ({
-      url: urlFor(figure.asset!.url!).width(1200).url(),
-      caption: figure.caption ?? figure.alt,
-    })),
-  });
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: site.name, url: site.url },
+      { name: "Case studies", url: `${site.url}/case-studies` },
+      { name: caseStudy.title ?? "", url },
+    ]),
+    ...caseStudyJsonLd({
+      url,
+      headline: caseStudy.title ?? "",
+      description: caseStudy.excerpt,
+      datePublished: caseStudy.publishedAt,
+      dateModified: caseStudy.updatedAt,
+      authorName: caseStudy.author?.name,
+      about: [caseStudy.client, ...(caseStudy.stack ?? [])],
+      images: gallery.map((figure) => ({
+        url: urlFor(figure.asset!.url!).width(1200).url(),
+        caption: figure.caption ?? figure.alt,
+      })),
+    }),
+  ];
 
   const year = caseStudy.timeframe?.start?.slice(0, 4) ?? null;
 
@@ -146,6 +157,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <SectionNav sections={sections} />
+      <ScrollDepthTracker />
+      <ViewPing path={`/case-studies/${slug}`} />
+      {sectionById.has("outcomes") ? <SectionViewTracker sectionId="outcomes" /> : null}
 
       <ArticleGrid
         measure="wide"

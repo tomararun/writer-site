@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 import { formatDate } from "@/lib/format";
 import type { SearchResponse } from "@/lib/search";
@@ -62,9 +63,11 @@ export function SearchClient({
       if (y) params.set("year", String(y));
       const res = await fetch(`/api/search?${params}`, { signal: controller.signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setResponse((await res.json()) as SearchResponse);
+      const data = (await res.json()) as SearchResponse;
+      setResponse(data);
       setStatus("done");
       setActiveIndex(-1);
+      track("search_performed", { results: data.total });
     } catch (error) {
       if ((error as Error).name === "AbortError") return;
       setStatus("error");

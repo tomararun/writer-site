@@ -1013,7 +1013,7 @@ export type HomeQueryResult = {
 // Query: *[_type == "post" && status == "published" && publishedAt <= now()].slug.current
 export type PostSlugsQueryResult = Array<string | null>;
 // Variable: postBySlugQuery
-// Query: *[_type == "post" && slug.current == $slug][0]{    _id, _type, title, "slug": slug.current, kind, excerpt,    "body": body[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    publishedAt, updatedAt, revisionNote, status,    readingTime, wordCount, headings,    canonicalUrl, seo,    "author": author->{name, "slug": slug.current, avatar, bio},    "category": category->{title, "slug": slug.current},    "tags": tags[]->{title, "slug": slug.current},    "tagIds": tags[]._ref,    "categoryId": category._ref,    "seriesId": series.series._ref,    "series": series{      order,      "series": series->{        title, "slug": slug.current, description,        "posts": *[          _type == "post" && status == "published" && publishedAt <= now() &&          series.series._ref == ^.^.series.series._ref        ] | order(series.order asc){title, "slug": slug.current, "order": series.order}      }    },    coverImage{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    "relatedManual": relatedManual[]->{      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,      "category": category->{title, "slug": slug.current}    }  }
+// Query: *[_type == "post" && slug.current == $slug][0]{    _id, _type, title, "slug": slug.current, kind, excerpt,    "body": body[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    publishedAt, updatedAt, revisionNote, status,    readingTime, wordCount, headings, plainText,    canonicalUrl, seo,    "author": author->{name, "slug": slug.current, avatar, bio},    "category": category->{title, "slug": slug.current},    "tags": tags[]->{title, "slug": slug.current},    "tagIds": tags[]._ref,    "categoryId": category._ref,    "seriesId": series.series._ref,    "series": series{      order,      "series": series->{        title, "slug": slug.current, description,        "posts": *[          _type == "post" && status == "published" && publishedAt <= now() &&          series.series._ref == ^.^.series.series._ref        ] | order(series.order asc){title, "slug": slug.current, "order": series.order}      }    },    coverImage{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    "relatedManual": relatedManual[]->{      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,      "category": category->{title, "slug": slug.current}    }  }
 export type PostBySlugQueryResult = {
   _id: string;
   _type: "post";
@@ -1153,6 +1153,7 @@ export type PostBySlugQueryResult = {
     _type: "heading";
     _key: string;
   }> | null;
+  plainText: string | null;
   canonicalUrl: string | null;
   seo: Seo | null;
   author: {
@@ -1620,7 +1621,7 @@ export type CaseStudyIndexQueryResult = Array<{
   } | null;
 }>;
 // Variable: caseStudyBySlugQuery
-// Query: *[_type == "caseStudy" && slug.current == $slug][0]{    _id, _type, title, "slug": slug.current, excerpt,    client, role, timeframe, stack, constraints,    "background": background[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "problem": problem[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "implementation": implementation[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "outcomes": outcomes[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "process": process[]{phase, title, body, duration,      artifacts[]{alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},    metrics,    learnings,    links,    testimonial{quote, name, role, avatar{      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},    publishedAt, updatedAt, revisionNote, status,    readingTime, wordCount, headings, seo, canonicalUrl,    "author": author->{name, "slug": slug.current},    "tags": tags[]->{title, "slug": slug.current},    heroMedia{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    coverImage{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    "gallery": gallery[]{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    "relatedPosts": relatedPosts[]->{      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,      "category": category->{title, "slug": slug.current}    }  }
+// Query: *[_type == "caseStudy" && slug.current == $slug][0]{    _id, _type, title, "slug": slug.current, excerpt,    client, role, timeframe, stack, constraints,    "background": background[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "problem": problem[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "implementation": implementation[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "outcomes": outcomes[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "process": process[]{phase, title, body, duration,      artifacts[]{alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},    metrics,    learnings,    links,    testimonial{quote, name, role, avatar{      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},    publishedAt, updatedAt, revisionNote, status,    readingTime, wordCount, headings, plainText, seo, canonicalUrl,    "author": author->{name, "slug": slug.current},    "tags": tags[]->{title, "slug": slug.current},    heroMedia{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    coverImage{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    "gallery": gallery[]{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    "relatedPosts": relatedPosts[]->{      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,      "category": category->{title, "slug": slug.current}    }  }
 export type CaseStudyBySlugQueryResult = {
   _id: string;
   _type: "caseStudy";
@@ -2169,6 +2170,7 @@ export type CaseStudyBySlugQueryResult = {
     _type: "heading";
     _key: string;
   }> | null;
+  plainText: string | null;
   seo: Seo | null;
   canonicalUrl: string | null;
   author: {
@@ -2563,6 +2565,300 @@ export type SearchIndexQueryResult = Array<
       coverUrl: string | null;
     }
 >;
+// Variable: feedContentQuery
+// Query: {  "posts": *[    _type == "post" && status == "published" && publishedAt <= now()  ] | order(publishedAt desc)[0...50]{    _id, title, "slug": slug.current, excerpt, publishedAt, updatedAt,    "body": body[]{      ...,      _type == "figure" => {alt, caption, "asset": asset->{url}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "tags": tags[]->title,    "author": author->name  },  "journal": *[    _type == "journalEntry" && status == "published" && publishedAt <= now()  ] | order(entryDate desc)[0...50]{    _id, title, "slug": slug.current, entryDate, publishedAt, reflection,    "body": body[]{      ...,      _type == "figure" => {alt, caption, "asset": asset->{url}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "topics": topics[]->title  },  "caseStudies": *[    _type == "caseStudy" && status == "published" && publishedAt <= now()  ] | order(publishedAt desc)[0...20]{    _id, title, "slug": slug.current, excerpt, publishedAt, updatedAt  }}
+export type FeedContentQueryResult = {
+  posts: Array<{
+    _id: string;
+    title: string | null;
+    slug: string | null;
+    excerpt: string | null;
+    publishedAt: string | null;
+    updatedAt: string | null;
+    body: Array<
+      | {
+          children?: Array<
+            | ({
+                _key: string;
+              } & Footnote)
+            | {
+                marks?: Array<string>;
+                text?: string;
+                _type: "span";
+                _key: string;
+              }
+          >;
+          style?: "blockquote" | "h2" | "h3" | "h4" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs: Array<
+            | {
+                href?: string;
+                rel?: string;
+                _type: "externalLink";
+                _key: string;
+              }
+            | {
+                reference:
+                  | {
+                      _type: "caseStudy";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "journalEntry";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "page";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "post";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "project";
+                      slug: string | null;
+                    }
+                  | null;
+                _type: "internalLink";
+                _key: string;
+              }
+          > | null;
+          level?: number;
+          _type: "block";
+          _key: string;
+        }
+      | {
+          _key: string;
+          _type: "calloutBox";
+          variant?: "aside" | "note" | "update" | "warning";
+          title?: string;
+          body?: SimpleText;
+          markDefs: null;
+        }
+      | {
+          _key: string;
+          _type: "codeBlock";
+          language?:
+            | "bash"
+            | "css"
+            | "groq"
+            | "html"
+            | "javascript"
+            | "json"
+            | "jsx"
+            | "python"
+            | "sql"
+            | "text"
+            | "tsx"
+            | "typescript";
+          filename?: string;
+          code?: string;
+          highlightLines?: Array<number>;
+          caption?: string;
+          markDefs: null;
+        }
+      | {
+          _key: string;
+          _type: "embed";
+          url?: string;
+          title?: string;
+          caption?: string;
+          markDefs: null;
+        }
+      | {
+          _key: string;
+          _type: "figure";
+          asset: {
+            url: string | null;
+          } | null;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt: string | null;
+          decorative?: boolean;
+          caption: string | null;
+          credit?: string;
+          layout?: "full" | "inline" | "side" | "wide";
+          markDefs: null;
+        }
+      | {
+          _key: string;
+          _type: "pullQuote";
+          text?: string;
+          attribution?: string;
+          emphasis?: boolean;
+          markDefs: null;
+        }
+    > | null;
+    tags: Array<string | null> | null;
+    author: string | null;
+  }>;
+  journal: Array<{
+    _id: string;
+    title: string | null;
+    slug: string | null;
+    entryDate: string | null;
+    publishedAt: string | null;
+    reflection: string | null;
+    body: Array<
+      | {
+          children?: Array<
+            | ({
+                _key: string;
+              } & Footnote)
+            | {
+                marks?: Array<string>;
+                text?: string;
+                _type: "span";
+                _key: string;
+              }
+          >;
+          style?: "blockquote" | "h2" | "h3" | "h4" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs: Array<
+            | {
+                href?: string;
+                rel?: string;
+                _type: "externalLink";
+                _key: string;
+              }
+            | {
+                reference:
+                  | {
+                      _type: "caseStudy";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "journalEntry";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "page";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "post";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "project";
+                      slug: string | null;
+                    }
+                  | null;
+                _type: "internalLink";
+                _key: string;
+              }
+          > | null;
+          level?: number;
+          _type: "block";
+          _key: string;
+        }
+      | {
+          _key: string;
+          _type: "calloutBox";
+          variant?: "aside" | "note" | "update" | "warning";
+          title?: string;
+          body?: SimpleText;
+          markDefs: null;
+        }
+      | {
+          _key: string;
+          _type: "codeBlock";
+          language?:
+            | "bash"
+            | "css"
+            | "groq"
+            | "html"
+            | "javascript"
+            | "json"
+            | "jsx"
+            | "python"
+            | "sql"
+            | "text"
+            | "tsx"
+            | "typescript";
+          filename?: string;
+          code?: string;
+          highlightLines?: Array<number>;
+          caption?: string;
+          markDefs: null;
+        }
+      | {
+          _key: string;
+          _type: "embed";
+          url?: string;
+          title?: string;
+          caption?: string;
+          markDefs: null;
+        }
+      | {
+          _key: string;
+          _type: "figure";
+          asset: {
+            url: string | null;
+          } | null;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt: string | null;
+          decorative?: boolean;
+          caption: string | null;
+          credit?: string;
+          layout?: "full" | "inline" | "side" | "wide";
+          markDefs: null;
+        }
+      | {
+          _key: string;
+          _type: "pullQuote";
+          text?: string;
+          attribution?: string;
+          emphasis?: boolean;
+          markDefs: null;
+        }
+    > | null;
+    topics: Array<string | null> | null;
+  }>;
+  caseStudies: Array<{
+    _id: string;
+    title: string | null;
+    slug: string | null;
+    excerpt: string | null;
+    publishedAt: string | null;
+    updatedAt: string | null;
+  }>;
+};
+// Variable: sitemapQuery
+// Query: {  "posts": *[_type == "post" && status == "published" && publishedAt <= now()]{    "slug": slug.current, publishedAt, updatedAt  },  "caseStudies": *[_type == "caseStudy" && status == "published" && publishedAt <= now()]{    "slug": slug.current, publishedAt, updatedAt  },  "journal": *[_type == "journalEntry" && status == "published" && publishedAt <= now()]{    "slug": slug.current, entryDate, publishedAt  },  "tags": *[_type == "tag" && !(_id in path("drafts.**"))]{"slug": slug.current},  "categories": *[_type == "category" && !(_id in path("drafts.**"))]{"slug": slug.current},  "series": *[_type == "series" && !(_id in path("drafts.**"))]{"slug": slug.current},  "pages": *[_type == "page" && !(_id in path("drafts.**"))]{"slug": slug.current}}
+export type SitemapQueryResult = {
+  posts: Array<{
+    slug: string | null;
+    publishedAt: string | null;
+    updatedAt: string | null;
+  }>;
+  caseStudies: Array<{
+    slug: string | null;
+    publishedAt: string | null;
+    updatedAt: string | null;
+  }>;
+  journal: Array<{
+    slug: string | null;
+    entryDate: string | null;
+    publishedAt: string | null;
+  }>;
+  tags: Array<{
+    slug: string | null;
+  }>;
+  categories: Array<{
+    slug: string | null;
+  }>;
+  series: Array<{
+    slug: string | null;
+  }>;
+  pages: Array<{
+    slug: string | null;
+  }>;
+};
 // Variable: redirectsQuery
 // Query: *[_type == "redirect"]{from, to, permanent}
 export type RedirectsQueryResult = Array<{
@@ -2578,7 +2874,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "siteSettings"][0]{\n    siteName,\n    description,\n    nav[]{label, href, kind},\n    socialLinks[]{label, href, kind, rel},\n    defaultSeo,\n    flags\n  }\n': SettingsQueryResult;
     '\n{\n  "settings": *[_type == "siteSettings"][0]{siteName, description},\n  "author": *[_type == "author"][0]{\n    name,\n    "avatar": avatar{hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  },\n  "featuredPosts": *[\n    _type == "post" && status == "published" && publishedAt <= now() && featured == true\n  ] | order(publishedAt desc)[0...3]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n    "category": category->{title, "slug": slug.current},\n    coverImage{alt, caption, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  },\n  "featuredCaseStudies": *[\n    _type == "caseStudy" && status == "published" && publishedAt <= now() && featured == true\n  ] | order(publishedAt desc)[0...2]{\n    _id, title, "slug": slug.current, excerpt, client, stack, publishedAt,\n    "metrics": metrics[0...3]{label, value, delta},\n    coverImage{alt, caption, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  },\n  "latestJournal": *[\n    _type == "journalEntry" && status == "published" && publishedAt <= now()\n  ] | order(entryDate desc)[0...5]{\n    _id, title, "slug": slug.current, entryDate, mood,\n    "topics": topics[]->{title, "slug": slug.current}\n  },\n  "latestPosts": *[\n    _type == "post" && status == "published" && publishedAt <= now()\n  ] | order(publishedAt desc)[0...5]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n    "category": category->{title, "slug": slug.current}\n  }\n}\n': HomeQueryResult;
     '\n  *[_type == "post" && status == "published" && publishedAt <= now()].slug.current\n': PostSlugsQueryResult;
-    '\n  *[_type == "post" && slug.current == $slug][0]{\n    _id, _type, title, "slug": slug.current, kind, excerpt,\n    "body": body[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    publishedAt, updatedAt, revisionNote, status,\n    readingTime, wordCount, headings,\n    canonicalUrl, seo,\n    "author": author->{name, "slug": slug.current, avatar, bio},\n    "category": category->{title, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    "tagIds": tags[]._ref,\n    "categoryId": category._ref,\n    "seriesId": series.series._ref,\n    "series": series{\n      order,\n      "series": series->{\n        title, "slug": slug.current, description,\n        "posts": *[\n          _type == "post" && status == "published" && publishedAt <= now() &&\n          series.series._ref == ^.^.series.series._ref\n        ] | order(series.order asc){title, "slug": slug.current, "order": series.order}\n      }\n    },\n    coverImage{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    "relatedManual": relatedManual[]->{\n      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n      "category": category->{title, "slug": slug.current}\n    }\n  }\n': PostBySlugQueryResult;
+    '\n  *[_type == "post" && slug.current == $slug][0]{\n    _id, _type, title, "slug": slug.current, kind, excerpt,\n    "body": body[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    publishedAt, updatedAt, revisionNote, status,\n    readingTime, wordCount, headings, plainText,\n    canonicalUrl, seo,\n    "author": author->{name, "slug": slug.current, avatar, bio},\n    "category": category->{title, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    "tagIds": tags[]._ref,\n    "categoryId": category._ref,\n    "seriesId": series.series._ref,\n    "series": series{\n      order,\n      "series": series->{\n        title, "slug": slug.current, description,\n        "posts": *[\n          _type == "post" && status == "published" && publishedAt <= now() &&\n          series.series._ref == ^.^.series.series._ref\n        ] | order(series.order asc){title, "slug": slug.current, "order": series.order}\n      }\n    },\n    coverImage{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    "relatedManual": relatedManual[]->{\n      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n      "category": category->{title, "slug": slug.current}\n    }\n  }\n': PostBySlugQueryResult;
     '\n{\n  "total": count(*[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ]),\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ] | order(publishedAt desc)[$offset...$end]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,\n    "category": category->{title, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    coverImage{alt, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  }\n}\n': PostIndexQueryResult;
     '\n{\n  "total": count(*[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ]),\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ] | order(publishedAt asc)[$offset...$end]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,\n    "category": category->{title, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    coverImage{alt, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  }\n}\n': PostIndexOldestQueryResult;
     '\n{\n  "total": count(*[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ]),\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    ($category == null || category->slug.current == $category) &&\n    ($tagSlug == null || $tagSlug in tags[]->slug.current) &&\n    ($kind == null || kind == $kind)\n  ] | order(coalesce(readingTime, 0) desc, publishedAt desc)[$offset...$end]{\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime, featured,\n    "category": category->{title, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    coverImage{alt, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  }\n}\n': PostIndexLongestQueryResult;
@@ -2596,7 +2892,7 @@ declare module "@sanity/client" {
     '\n  *[\n    _type == "journalEntry" && status == "published" && publishedAt <= now() &&\n    _id != $id && count((topics[]._ref)[@ in $topicIds]) > 0\n  ]{\n    _id, title, "slug": slug.current, entryDate, mood, publishedAt,\n    "tagIds": topics[]._ref\n  }\n': JournalRelatedCandidatesQueryResult;
     '\n  *[_type == "caseStudy" && status == "published" && publishedAt <= now()].slug.current\n': CaseStudySlugsQueryResult;
     '\n  *[_type == "caseStudy" && status == "published" && publishedAt <= now()]\n    | order(publishedAt desc){\n    _id, title, "slug": slug.current, excerpt, client, stack, publishedAt, featured,\n    "metrics": metrics[0...3]{label, value, delta},\n    coverImage{alt, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  }\n': CaseStudyIndexQueryResult;
-    '\n  *[_type == "caseStudy" && slug.current == $slug][0]{\n    _id, _type, title, "slug": slug.current, excerpt,\n    client, role, timeframe, stack, constraints,\n    "background": background[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "problem": problem[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "implementation": implementation[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "outcomes": outcomes[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "process": process[]{phase, title, body, duration,\n      artifacts[]{alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},\n    metrics,\n    learnings,\n    links,\n    testimonial{quote, name, role, avatar{\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},\n    publishedAt, updatedAt, revisionNote, status,\n    readingTime, wordCount, headings, seo, canonicalUrl,\n    "author": author->{name, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    heroMedia{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    coverImage{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    "gallery": gallery[]{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    "relatedPosts": relatedPosts[]->{\n      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n      "category": category->{title, "slug": slug.current}\n    }\n  }\n': CaseStudyBySlugQueryResult;
+    '\n  *[_type == "caseStudy" && slug.current == $slug][0]{\n    _id, _type, title, "slug": slug.current, excerpt,\n    client, role, timeframe, stack, constraints,\n    "background": background[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "problem": problem[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "implementation": implementation[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "outcomes": outcomes[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "process": process[]{phase, title, body, duration,\n      artifacts[]{alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},\n    metrics,\n    learnings,\n    links,\n    testimonial{quote, name, role, avatar{\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},\n    publishedAt, updatedAt, revisionNote, status,\n    readingTime, wordCount, headings, plainText, seo, canonicalUrl,\n    "author": author->{name, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    heroMedia{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    coverImage{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    "gallery": gallery[]{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    "relatedPosts": relatedPosts[]->{\n      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n      "category": category->{title, "slug": slug.current}\n    }\n  }\n': CaseStudyBySlugQueryResult;
     '\n  *[_type == "project"] | order(featured desc, year desc){\n    _id, title, "slug": slug.current, summary, year, status, stack, featured,\n    links,\n    "caseStudy": caseStudy->{title, "slug": slug.current},\n    thumbnail{alt, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  }\n': ProjectIndexQueryResult;
     '\n{\n  "tag": *[_type == "tag" && slug.current == $slug][0]{title, "slug": slug.current, description},\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    $slug in tags[]->slug.current\n  ] | order(publishedAt desc){\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n    "category": category->{title, "slug": slug.current}\n  },\n  "journalEntries": *[\n    _type == "journalEntry" && status == "published" && publishedAt <= now() &&\n    $slug in topics[]->slug.current\n  ] | order(entryDate desc){\n    _id, title, "slug": slug.current, entryDate, mood\n  }\n}\n': TagFacetQueryResult;
     '\n{\n  "category": *[_type == "category" && slug.current == $slug][0]{\n    title, "slug": slug.current, description\n  },\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    category->slug.current == $slug\n  ] | order(publishedAt desc){\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime\n  }\n}\n': CategoryFacetQueryResult;
@@ -2605,6 +2901,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "page" && slug.current == $slug][0]{\n    _id, title, "slug": slug.current, seo,\n    sections[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n    }\n  }\n': PageBySlugQueryResult;
     '\n  *[_type == "newsletterIssue"] | order(number desc){\n    _id, number, title, sentAt, intro,\n    "linkedPosts": linkedPosts[]->{title, "slug": slug.current}\n  }\n': NewsletterIssuesQueryResult;
     '\n  *[\n    _type in ["post", "caseStudy", "journalEntry", "project", "page"] &&\n    !(_id in path("drafts.**")) &&\n    (_type in ["project", "page"] || (status == "published" && publishedAt <= now()))\n  ]{\n    _id, _type, kind,\n    "slug": slug.current,\n    title, excerpt, reflection, summary, plainText,\n    "tagTitles": coalesce(tags, topics)[]->title,\n    "category": category->title,\n    publishedAt, entryDate, readingTime,\n    "coverUrl": coalesce(coverImage.asset->url, thumbnail.asset->url)\n  }\n': SearchIndexQueryResult;
+    '\n{\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now()\n  ] | order(publishedAt desc)[0...50]{\n    _id, title, "slug": slug.current, excerpt, publishedAt, updatedAt,\n    "body": body[]{\n      ...,\n      _type == "figure" => {alt, caption, "asset": asset->{url}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "tags": tags[]->title,\n    "author": author->name\n  },\n  "journal": *[\n    _type == "journalEntry" && status == "published" && publishedAt <= now()\n  ] | order(entryDate desc)[0...50]{\n    _id, title, "slug": slug.current, entryDate, publishedAt, reflection,\n    "body": body[]{\n      ...,\n      _type == "figure" => {alt, caption, "asset": asset->{url}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "topics": topics[]->title\n  },\n  "caseStudies": *[\n    _type == "caseStudy" && status == "published" && publishedAt <= now()\n  ] | order(publishedAt desc)[0...20]{\n    _id, title, "slug": slug.current, excerpt, publishedAt, updatedAt\n  }\n}\n': FeedContentQueryResult;
+    '\n{\n  "posts": *[_type == "post" && status == "published" && publishedAt <= now()]{\n    "slug": slug.current, publishedAt, updatedAt\n  },\n  "caseStudies": *[_type == "caseStudy" && status == "published" && publishedAt <= now()]{\n    "slug": slug.current, publishedAt, updatedAt\n  },\n  "journal": *[_type == "journalEntry" && status == "published" && publishedAt <= now()]{\n    "slug": slug.current, entryDate, publishedAt\n  },\n  "tags": *[_type == "tag" && !(_id in path("drafts.**"))]{"slug": slug.current},\n  "categories": *[_type == "category" && !(_id in path("drafts.**"))]{"slug": slug.current},\n  "series": *[_type == "series" && !(_id in path("drafts.**"))]{"slug": slug.current},\n  "pages": *[_type == "page" && !(_id in path("drafts.**"))]{"slug": slug.current}\n}\n': SitemapQueryResult;
     '\n  *[_type == "redirect"]{from, to, permanent}\n': RedirectsQueryResult;
   }
 }

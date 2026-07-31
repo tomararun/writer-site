@@ -1,0 +1,33 @@
+# [Your Name] — writer-site
+
+> Personal writing portfolio, blog, case study hub and public learning
+> journal by [Your Name], a [role] in Rotterdam. Essays about craft and
+> attention, breakdowns of shipped projects, and dated learning notes —
+> including the parts that didn't work.
+
+## Sections
+
+- /writing — essays, tutorials, reflections and opinions. The finished arguments.
+- /case-studies — long-form breakdowns of shipped work: constraints, process, sourced metrics, honest learnings.
+- /journal — a public learning log: short dated notes, unedited on purpose.
+- /projects — compact records of things built, some with full case studies.
+- /archive — every published piece, filterable by type, category, tag and year.
+- /about — who writes this.
+- /newsletter — a letter every other Sunday: one essay, three links, one open problem.
+
+## Feeds
+
+- /rss.xml — everything
+- /feed/writing.xml — writing only, full text
+- /feed/journal.xml — journal only
+- /feed.json — JSON Feed 1.1
+
+## Themes
+
+Craft, systems, attention, practice: how software gets made well, typography
+and reading UX, learning in public.
+
+## Reuse
+
+Quote with attribution and a link. The full text of essays is in the writing
+feed on purpose — take the argument, credit the author.

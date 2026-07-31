@@ -10,7 +10,7 @@ import { Redis } from "@upstash/redis";
  * to set the env (documented in PHASE-5-NOTES).
  */
 
-type LimiterName = "subscribe" | "contact" | "confirm" | "search";
+type LimiterName = "subscribe" | "contact" | "confirm" | "search" | "views";
 
 const WINDOWS: Record<LimiterName, { limit: number; window: `${number} ${"s" | "m" | "h"}` }> =
   {
@@ -18,6 +18,7 @@ const WINDOWS: Record<LimiterName, { limit: number; window: `${number} ${"s" | "
     contact: { limit: 3, window: "1 h" },
     confirm: { limit: 20, window: "1 h" },
     search: { limit: 30, window: "1 m" },
+    views: { limit: 1, window: "30 m" },
   };
 
 let warned = false;

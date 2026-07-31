@@ -5,14 +5,15 @@ Built to the specification in [`docs/SPEC.md`](docs/SPEC.md).
 
 ## Status
 
-**Phase 6 complete and verified.** Per-phase notes:
+**Phase 7 complete and verified.** Per-phase notes:
 [`docs/PHASE-0-NOTES.md`](docs/PHASE-0-NOTES.md),
 [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md),
 [`docs/PHASE-2-NOTES.md`](docs/PHASE-2-NOTES.md),
 [`docs/PHASE-3-NOTES.md`](docs/PHASE-3-NOTES.md),
 [`docs/PHASE-4-NOTES.md`](docs/PHASE-4-NOTES.md),
 [`docs/PHASE-5-NOTES.md`](docs/PHASE-5-NOTES.md),
-[`docs/PHASE-6-NOTES.md`](docs/PHASE-6-NOTES.md) — each lists what was built,
+[`docs/PHASE-6-NOTES.md`](docs/PHASE-6-NOTES.md),
+[`docs/PHASE-7-NOTES.md`](docs/PHASE-7-NOTES.md) — each lists what was built,
 what was verified, and the decisions that deviate from the spec.
 
 | Phase | Scope                                                       | Status  |
@@ -24,8 +25,8 @@ what was verified, and the decisions that deviate from the spec.
 | 4     | Case study template                                         | ✅ Done |
 | 5     | Postgres, newsletter double opt-in, contact form            | ✅ Done |
 | 6     | Search, command palette, archive                            | ✅ Done |
-| 7     | SEO, feeds, OG images, structured data, analytics           | ⬜ Next |
-| 8     | Hardening, e2e, a11y, Lighthouse, content, launch           | ⬜      |
+| 7     | SEO, feeds, OG images, structured data, analytics           | ✅ Done |
+| 8     | Hardening, e2e, a11y, Lighthouse, content, launch           | ⬜ Next |
 
 ## Getting started
 
@@ -56,6 +57,9 @@ Open http://localhost:3000. The routes:
   (Neon + Resend + Upstash + Turnstile; degrades gracefully until the
   services are connected — see
   [`docs/PHASE-5-NOTES.md`](docs/PHASE-5-NOTES.md)), and the contact form.
+- Discovery: `/rss.xml`, `/feed/writing.xml` (full text), `/feed/journal.xml`,
+  `/feed.json`, `/sitemap.xml`, `/robots.txt`, `/llms.txt`, and `/api/og`
+  social cards. CMS `redirect` documents apply at build and via middleware.
 - `/studio` — the embedded Sanity Studio. Needs a Sanity project: follow
   "Connect your Sanity project" in
   [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md), then `npm run seed` to fill

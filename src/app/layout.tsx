@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "@/styles/typography.css";
+import { OutboundClickTracker } from "@/components/modules/Trackers";
 import { PreviewBanner } from "@/components/layout/PreviewBanner";
 import { Shell } from "@/components/layout/Shell";
 import { fontVariables } from "@/lib/fonts";
@@ -51,10 +52,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* §5.7 — Plausible: cookieless, loaded only once a domain is set. */}
+        {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ? (
+          <script
+            defer
+            data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+            src="https://plausible.io/js/script.js"
+          />
+        ) : null}
+        {/* Vercel Web Analytics — the beacon the official component injects,
+            without carrying its dependency tree. Active only on Vercel. */}
+        {process.env.VERCEL ? <script defer src="/_vercel/insights/script.js" /> : null}
       </head>
       <body className={fontVariables}>
         <PreviewBanner />
         <Shell>{children}</Shell>
+        <OutboundClickTracker />
       </body>
     </html>
   );

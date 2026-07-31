@@ -85,7 +85,7 @@ export const postBySlugQuery = defineQuery(`
       }
     },
     publishedAt, updatedAt, revisionNote, status,
-    readingTime, wordCount, headings,
+    readingTime, wordCount, headings, plainText,
     canonicalUrl, seo,
     "author": author->{name, "slug": slug.current, avatar, bio},
     "category": category->{title, "slug": slug.current},
@@ -387,7 +387,7 @@ export const caseStudyBySlugQuery = defineQuery(`
     testimonial{quote, name, role, avatar{
       "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},
     publishedAt, updatedAt, revisionNote, status,
-    readingTime, wordCount, headings, seo, canonicalUrl,
+    readingTime, wordCount, headings, plainText, seo, canonicalUrl,
     "author": author->{name, "slug": slug.current},
     "tags": tags[]->{title, "slug": slug.current},
     heroMedia{alt, caption, credit, layout, hotspot, crop,
@@ -519,6 +519,67 @@ export const searchIndexQuery = defineQuery(`
     publishedAt, entryDate, readingTime,
     "coverUrl": coalesce(coverImage.asset->url, thumbnail.asset->url)
   }
+`);
+
+/* ── Feeds (§4.7) — full content for writing, capped item counts ──────── */
+
+export const feedContentQuery = defineQuery(`
+{
+  "posts": *[
+    _type == "post" && status == "published" && publishedAt <= now()
+  ] | order(publishedAt desc)[0...50]{
+    _id, title, "slug": slug.current, excerpt, publishedAt, updatedAt,
+    "body": body[]{
+      ...,
+      _type == "figure" => {alt, caption, "asset": asset->{url}},
+      markDefs[]{
+        ...,
+        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}
+      }
+    },
+    "tags": tags[]->title,
+    "author": author->name
+  },
+  "journal": *[
+    _type == "journalEntry" && status == "published" && publishedAt <= now()
+  ] | order(entryDate desc)[0...50]{
+    _id, title, "slug": slug.current, entryDate, publishedAt, reflection,
+    "body": body[]{
+      ...,
+      _type == "figure" => {alt, caption, "asset": asset->{url}},
+      markDefs[]{
+        ...,
+        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}
+      }
+    },
+    "topics": topics[]->title
+  },
+  "caseStudies": *[
+    _type == "caseStudy" && status == "published" && publishedAt <= now()
+  ] | order(publishedAt desc)[0...20]{
+    _id, title, "slug": slug.current, excerpt, publishedAt, updatedAt
+  }
+}
+`);
+
+/* ── Sitemap (§4.7) ───────────────────────────────────────────────────── */
+
+export const sitemapQuery = defineQuery(`
+{
+  "posts": *[_type == "post" && status == "published" && publishedAt <= now()]{
+    "slug": slug.current, publishedAt, updatedAt
+  },
+  "caseStudies": *[_type == "caseStudy" && status == "published" && publishedAt <= now()]{
+    "slug": slug.current, publishedAt, updatedAt
+  },
+  "journal": *[_type == "journalEntry" && status == "published" && publishedAt <= now()]{
+    "slug": slug.current, entryDate, publishedAt
+  },
+  "tags": *[_type == "tag" && !(_id in path("drafts.**"))]{"slug": slug.current},
+  "categories": *[_type == "category" && !(_id in path("drafts.**"))]{"slug": slug.current},
+  "series": *[_type == "series" && !(_id in path("drafts.**"))]{"slug": slug.current},
+  "pages": *[_type == "page" && !(_id in path("drafts.**"))]{"slug": slug.current}
+}
 `);
 
 /* ── Redirects (consumed by middleware in Phase 7) ────────────────────── */

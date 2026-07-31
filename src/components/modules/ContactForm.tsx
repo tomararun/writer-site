@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useId, useRef } from "react";
 import { sendContactMessage } from "@/app/actions/contact";
+import { track } from "@/lib/analytics";
 import { idleFormState } from "@/lib/form-state";
 import { cn } from "@/lib/cn";
 import { TurnstileWidget } from "./TurnstileWidget";
@@ -32,6 +33,11 @@ export function ContactForm() {
   const id = (field: string) => `contact-${field}-${uid}`;
   const errorId = (field: string) => `contact-${field}-error-${uid}`;
   const errors = state.fieldErrors ?? {};
+
+  /* §5.7 G4. */
+  useEffect(() => {
+    if (state.status === "success") track("contact_submitted");
+  }, [state.status]);
 
   /* Focus the first invalid field after a failed submit (§6.11 a11y). */
   useEffect(() => {

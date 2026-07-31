@@ -22,9 +22,11 @@ import {
 } from "@/components/modules/ArticleFooter";
 import { MarginRail } from "@/components/modules/MarginRail";
 import { MobileArticleNav } from "@/components/modules/MobileArticleNav";
+import { ScrollDepthTracker, ViewPing } from "@/components/modules/Trackers";
 import { extractFootnotes, extractHeadings } from "@/lib/portable-text";
-import { blogPostingJsonLd } from "@/lib/jsonld";
+import { blogPostingJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import { relatedContent } from "@/lib/related";
+import { buildMetadata, ogImageUrl } from "@/lib/seo";
 import { isPubliclyVisible } from "@/lib/visibility";
 import { publishedClient } from "@/sanity/lib/client";
 import { sanityFetch } from "@/sanity/lib/fetch";
@@ -76,29 +78,25 @@ export async function generateMetadata({
   }
   if (!post) return {};
 
-  const title = post.seo?.title ?? post.title ?? "";
-  const description = post.seo?.description ?? post.excerpt ?? undefined;
-  const canonical = post.canonicalUrl ?? `/writing/${slug}`;
-  const coverUrl = post.coverImage?.asset?.url
-    ? urlFor(post.coverImage.asset.url).width(1200).url()
-    : undefined;
-
-  return {
-    // §6.4 — no site suffix once the title is already long.
-    title: title.length >= 55 ? { absolute: title } : title,
-    description,
-    alternates: { canonical },
-    openGraph: {
-      type: "article",
-      title,
-      description,
-      publishedTime: post.publishedAt ?? undefined,
-      modifiedTime: post.updatedAt ?? undefined,
-      tags: (post.tags ?? []).map((tag) => tag.title).filter((t): t is string => Boolean(t)),
-      images: coverUrl ? [coverUrl] : undefined,
-    },
-    robots: post.seo?.noIndex ? { index: false, follow: false } : undefined,
-  };
+  // §4.7 — one metadata builder; OG image from /api/og keyed on updatedAt.
+  return buildMetadata({
+    title: post.title ?? "",
+    seoTitle: post.seo?.title,
+    seoDescription: post.seo?.description,
+    excerpt: post.excerpt,
+    plainText: post.plainText,
+    path: `/writing/${slug}`,
+    canonicalUrl: post.canonicalUrl,
+    publishedAt: post.publishedAt,
+    updatedAt: post.updatedAt,
+    tags: (post.tags ?? []).map((tag) => tag.title),
+    ogImage: ogImageUrl({
+      slug,
+      type: "post",
+      updatedAt: post.updatedAt ?? post.publishedAt,
+    }),
+    noIndex: post.seo?.noIndex,
+  });
 }
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -155,20 +153,27 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     })(),
   ]);
 
-  const jsonLd = blogPostingJsonLd({
-    url,
-    headline: post.title ?? "",
-    description: post.seo?.description ?? post.excerpt,
-    datePublished: post.publishedAt,
-    dateModified: post.updatedAt,
-    authorName: post.author?.name,
-    imageUrl: post.coverImage?.asset?.url
-      ? urlFor(post.coverImage.asset.url).width(1200).url()
-      : null,
-    wordCount: post.wordCount,
-    keywords: (post.tags ?? []).map((tag) => tag.title),
-    articleSection: post.category?.title,
-  });
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: site.name, url: site.url },
+      { name: "Writing", url: `${site.url}/writing` },
+      { name: post.title ?? "", url },
+    ]),
+    blogPostingJsonLd({
+      url,
+      headline: post.title ?? "",
+      description: post.seo?.description ?? post.excerpt,
+      datePublished: post.publishedAt,
+      dateModified: post.updatedAt,
+      authorName: post.author?.name,
+      imageUrl: post.coverImage?.asset?.url
+        ? urlFor(post.coverImage.asset.url).width(1200).url()
+        : null,
+      wordCount: post.wordCount,
+      keywords: (post.tags ?? []).map((tag) => tag.title),
+      articleSection: post.category?.title,
+    }),
+  ];
 
   return (
     <>
@@ -177,6 +182,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <MobileArticleNav sections={sections} />
+      <ScrollDepthTracker />
+      <ViewPing path={`/writing/${slug}`} />
 
       <ArticleGrid
         className="py-12 sm:py-16"
