@@ -19,7 +19,13 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "verify": "npm run typegen && npm run typecheck && npm run lint && npm run test && npm run build"
+    "verify": "npm run typegen && npm run typecheck && npm run lint && npm run test && npm run build",
+    "test:coverage": "vitest run --coverage",
+    "e2e": "playwright test",
+    "e2e:chromium": "playwright test --project=chromium",
+    "lint:content": "tsx --env-file-if-exists=.env.local scripts/content-lint.ts",
+    "reindex": "tsx --env-file-if-exists=.env.local scripts/reindex-search.ts",
+    "lhci": "lhci autorun"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
@@ -42,13 +48,17 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@eslint/eslintrc": "^3.3.1",
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.1.13",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^22.15.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/coverage-v8": "^3.2.7",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.34.0",
     "eslint-config-next": "15.5.4",

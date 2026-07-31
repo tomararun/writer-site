@@ -53,6 +53,8 @@ export default async function WritingIndexPage({
         ? postIndexLongestQuery
         : postIndexQuery;
 
+  // Dynamic route: degrade to the designed empty state when Sanity is
+  // unreachable (fresh clone, mid-outage) instead of a 500.
   const [result, options] = await Promise.all([
     sanityFetch({
       query,
@@ -65,8 +67,11 @@ export default async function WritingIndexPage({
         end: PAGE_SIZE * filters.page,
       },
       tags: ["post", "category", "tag"],
-    }),
-    sanityFetch({ query: writingFilterOptionsQuery, tags: ["category", "tag"] }),
+    }).catch(() => ({ total: 0, posts: [] })),
+    sanityFetch({ query: writingFilterOptionsQuery, tags: ["category", "tag"] }).catch(() => ({
+      categories: [],
+      tags: [],
+    })),
   ]);
 
   const posts = result.posts;

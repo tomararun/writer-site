@@ -29,7 +29,9 @@ export default async function ProjectsIndexPage({
 }) {
   const { status } = parseProjectParams(await searchParams);
 
-  const projects = await sanityFetch({ query: projectIndexQuery, tags: ["project"] });
+  const projects = await sanityFetch({ query: projectIndexQuery, tags: ["project"] }).catch(
+    () => [],
+  );
   const visible = status ? projects.filter((project) => project.status === status) : projects;
 
   const jsonLd = collectionPageJsonLd({

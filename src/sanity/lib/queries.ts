@@ -582,6 +582,25 @@ export const sitemapQuery = defineQuery(`
 }
 `);
 
+/* ── Scheduled publishing (Phase 8 cron) ──────────────────────────────── */
+
+export const recentlyPublishedQuery = defineQuery(`
+  *[
+    _type in ["post", "caseStudy", "journalEntry"] &&
+    status == "published" && publishedAt <= now() && publishedAt > $since
+  ]{
+    _id, _type, kind,
+    "slug": slug.current,
+    title, excerpt, reflection, summary, plainText,
+    publishedAt, entryDate, readingTime,
+    "tags": coalesce(tags, topics)[]->slug.current,
+    "tagTitles": coalesce(tags, topics)[]->title,
+    "category": category->slug.current,
+    "series": series.series->slug.current,
+    "coverUrl": coverImage.asset->url
+  }
+`);
+
 /* ── Redirects (consumed by middleware in Phase 7) ────────────────────── */
 
 export const redirectsQuery = defineQuery(`

@@ -1,0 +1,33 @@
+name: Dataset backup
+
+# SPEC §4.2 / §9.1 — weekly Sanity dataset export, kept as a workflow
+# artifact for 90 days. Restore: `npx sanity dataset import <file> <dataset>`.
+# Requires two repository secrets:
+#   SANITY_AUTH_TOKEN  — a token with read access (sanity.io/manage → API)
+#   SANITY_PROJECT_ID  — the project id
+on:
+  schedule:
+    - cron: "0 4 * * 1" # Mondays 04:00 UTC
+  workflow_dispatch:
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Export production dataset
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+        run: |
+          npx sanity dataset export production backup.tar.gz --overwrite
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sanity-backup-${{ github.run_id }}
+          path: backup.tar.gz
+          retention-days: 90

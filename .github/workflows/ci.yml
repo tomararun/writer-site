@@ -25,8 +25,9 @@ jobs:
         run: npm run lint
       - name: Format check
         run: npm run format:check
-      - name: Unit tests
-        run: npm run test
+      # §5.9 — unit + component tests with the ≥80% src/lib coverage gate.
+      - name: Unit tests (with coverage gate)
+        run: npm run test:coverage
       - name: Build
         run: npm run build
         env:
@@ -60,3 +61,52 @@ jobs:
             process.exit(1);
           }
           '
+
+  # §5.9 — Playwright (chromium in CI; webkit + mobile run locally/pre-deploy)
+  # and axe on every reachable template. Content-dependent specs skip
+  # themselves when no Sanity dataset is configured.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      - name: Playwright + axe
+        run: npx playwright test --project=chromium
+        env:
+          CI: "true"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: test-results/
+          retention-days: 7
+
+  # §5.9 — Lighthouse CI on the audited routes. continue-on-error until real
+  # content lands (scores on empty states are not the launch scores); flip to
+  # blocking as part of the §9 launch checklist.
+  lighthouse:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      - name: Lighthouse CI
+        run: npx lhci autorun

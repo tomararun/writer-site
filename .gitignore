@@ -12,3 +12,6 @@ coverage
 # when no project is configured (CI, fresh clones).
 .sanity/*
 !.sanity/schema.json
+# Playwright
+test-results
+playwright-report

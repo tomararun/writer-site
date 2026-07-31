@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * SPEC §6.0 / §6.13 — the ⌘K (and "/") entry point, now opening the command
@@ -16,6 +16,14 @@ const CommandPalette = dynamic(() => import("@/components/modules/CommandPalette
 export function SearchTrigger() {
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // Deterministic focus restore: the palette mounts already-open (lazy
+  // import), so Radix's own restore target can be stale.
+  function handleOpenChange(next: boolean) {
+    setOpen(next);
+    if (!next) buttonRef.current?.focus();
+  }
 
   function show() {
     setLoaded(true);
@@ -42,6 +50,7 @@ export function SearchTrigger() {
   return (
     <>
       <button
+        ref={buttonRef}
         type="button"
         onClick={show}
         aria-label="Search"
@@ -60,7 +69,7 @@ export function SearchTrigger() {
           <path d="M10.2 10.2 14 14" strokeLinecap="round" />
         </svg>
       </button>
-      {loaded ? <CommandPalette open={open} onOpenChange={setOpen} /> : null}
+      {loaded ? <CommandPalette open={open} onOpenChange={handleOpenChange} /> : null}
     </>
   );
 }

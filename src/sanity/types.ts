@@ -2859,6 +2859,67 @@ export type SitemapQueryResult = {
     slug: string | null;
   }>;
 };
+// Variable: recentlyPublishedQuery
+// Query: *[    _type in ["post", "caseStudy", "journalEntry"] &&    status == "published" && publishedAt <= now() && publishedAt > $since  ]{    _id, _type, kind,    "slug": slug.current,    title, excerpt, reflection, summary, plainText,    publishedAt, entryDate, readingTime,    "tags": coalesce(tags, topics)[]->slug.current,    "tagTitles": coalesce(tags, topics)[]->title,    "category": category->slug.current,    "series": series.series->slug.current,    "coverUrl": coverImage.asset->url  }
+export type RecentlyPublishedQueryResult = Array<
+  | {
+      _id: string;
+      _type: "caseStudy";
+      kind: null;
+      slug: string | null;
+      title: string | null;
+      excerpt: string | null;
+      reflection: null;
+      summary: null;
+      plainText: string | null;
+      publishedAt: string | null;
+      entryDate: null;
+      readingTime: number | null;
+      tags: Array<string | null> | null;
+      tagTitles: Array<string | null> | null;
+      category: null;
+      series: null;
+      coverUrl: string | null;
+    }
+  | {
+      _id: string;
+      _type: "journalEntry";
+      kind: null;
+      slug: string | null;
+      title: string | null;
+      excerpt: null;
+      reflection: string | null;
+      summary: null;
+      plainText: string | null;
+      publishedAt: string | null;
+      entryDate: string | null;
+      readingTime: number | null;
+      tags: Array<string | null> | null;
+      tagTitles: Array<string | null> | null;
+      category: null;
+      series: null;
+      coverUrl: null;
+    }
+  | {
+      _id: string;
+      _type: "post";
+      kind: "essay" | "opinion" | "reflection" | "tutorial" | null;
+      slug: string | null;
+      title: string | null;
+      excerpt: string | null;
+      reflection: null;
+      summary: null;
+      plainText: string | null;
+      publishedAt: string | null;
+      entryDate: null;
+      readingTime: number | null;
+      tags: Array<string | null> | null;
+      tagTitles: Array<string | null> | null;
+      category: string | null;
+      series: string | null;
+      coverUrl: string | null;
+    }
+>;
 // Variable: redirectsQuery
 // Query: *[_type == "redirect"]{from, to, permanent}
 export type RedirectsQueryResult = Array<{
@@ -2903,6 +2964,7 @@ declare module "@sanity/client" {
     '\n  *[\n    _type in ["post", "caseStudy", "journalEntry", "project", "page"] &&\n    !(_id in path("drafts.**")) &&\n    (_type in ["project", "page"] || (status == "published" && publishedAt <= now()))\n  ]{\n    _id, _type, kind,\n    "slug": slug.current,\n    title, excerpt, reflection, summary, plainText,\n    "tagTitles": coalesce(tags, topics)[]->title,\n    "category": category->title,\n    publishedAt, entryDate, readingTime,\n    "coverUrl": coalesce(coverImage.asset->url, thumbnail.asset->url)\n  }\n': SearchIndexQueryResult;
     '\n{\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now()\n  ] | order(publishedAt desc)[0...50]{\n    _id, title, "slug": slug.current, excerpt, publishedAt, updatedAt,\n    "body": body[]{\n      ...,\n      _type == "figure" => {alt, caption, "asset": asset->{url}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "tags": tags[]->title,\n    "author": author->name\n  },\n  "journal": *[\n    _type == "journalEntry" && status == "published" && publishedAt <= now()\n  ] | order(entryDate desc)[0...50]{\n    _id, title, "slug": slug.current, entryDate, publishedAt, reflection,\n    "body": body[]{\n      ...,\n      _type == "figure" => {alt, caption, "asset": asset->{url}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "topics": topics[]->title\n  },\n  "caseStudies": *[\n    _type == "caseStudy" && status == "published" && publishedAt <= now()\n  ] | order(publishedAt desc)[0...20]{\n    _id, title, "slug": slug.current, excerpt, publishedAt, updatedAt\n  }\n}\n': FeedContentQueryResult;
     '\n{\n  "posts": *[_type == "post" && status == "published" && publishedAt <= now()]{\n    "slug": slug.current, publishedAt, updatedAt\n  },\n  "caseStudies": *[_type == "caseStudy" && status == "published" && publishedAt <= now()]{\n    "slug": slug.current, publishedAt, updatedAt\n  },\n  "journal": *[_type == "journalEntry" && status == "published" && publishedAt <= now()]{\n    "slug": slug.current, entryDate, publishedAt\n  },\n  "tags": *[_type == "tag" && !(_id in path("drafts.**"))]{"slug": slug.current},\n  "categories": *[_type == "category" && !(_id in path("drafts.**"))]{"slug": slug.current},\n  "series": *[_type == "series" && !(_id in path("drafts.**"))]{"slug": slug.current},\n  "pages": *[_type == "page" && !(_id in path("drafts.**"))]{"slug": slug.current}\n}\n': SitemapQueryResult;
+    '\n  *[\n    _type in ["post", "caseStudy", "journalEntry"] &&\n    status == "published" && publishedAt <= now() && publishedAt > $since\n  ]{\n    _id, _type, kind,\n    "slug": slug.current,\n    title, excerpt, reflection, summary, plainText,\n    publishedAt, entryDate, readingTime,\n    "tags": coalesce(tags, topics)[]->slug.current,\n    "tagTitles": coalesce(tags, topics)[]->title,\n    "category": category->slug.current,\n    "series": series.series->slug.current,\n    "coverUrl": coverImage.asset->url\n  }\n': RecentlyPublishedQueryResult;
     '\n  *[_type == "redirect"]{from, to, permanent}\n': RedirectsQueryResult;
   }
 }

@@ -35,8 +35,8 @@ export default async function JournalIndexPage({
   const { topic, page } = parseJournalParams(await searchParams);
 
   const [allEntries, topics] = await Promise.all([
-    sanityFetch({ query: journalIndexQuery, tags: ["journalEntry", "tag"] }),
-    sanityFetch({ query: journalTopicsQuery, tags: ["journalEntry", "tag"] }),
+    sanityFetch({ query: journalIndexQuery, tags: ["journalEntry", "tag"] }).catch(() => []),
+    sanityFetch({ query: journalTopicsQuery, tags: ["journalEntry", "tag"] }).catch(() => []),
   ]);
 
   // The year strip reflects the whole journal; the filter narrows the list.

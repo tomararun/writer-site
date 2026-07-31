@@ -5,7 +5,9 @@ Built to the specification in [`docs/SPEC.md`](docs/SPEC.md).
 
 ## Status
 
-**Phase 7 complete and verified.** Per-phase notes:
+**All nine phases built.** The engineering is done and CI-gated; the launch
+items that need real content and live services are tracked in
+[`docs/LAUNCH-RUNBOOK.md`](docs/LAUNCH-RUNBOOK.md). Per-phase notes:
 [`docs/PHASE-0-NOTES.md`](docs/PHASE-0-NOTES.md),
 [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md),
 [`docs/PHASE-2-NOTES.md`](docs/PHASE-2-NOTES.md),
@@ -13,20 +15,21 @@ Built to the specification in [`docs/SPEC.md`](docs/SPEC.md).
 [`docs/PHASE-4-NOTES.md`](docs/PHASE-4-NOTES.md),
 [`docs/PHASE-5-NOTES.md`](docs/PHASE-5-NOTES.md),
 [`docs/PHASE-6-NOTES.md`](docs/PHASE-6-NOTES.md),
-[`docs/PHASE-7-NOTES.md`](docs/PHASE-7-NOTES.md) — each lists what was built,
+[`docs/PHASE-7-NOTES.md`](docs/PHASE-7-NOTES.md),
+[`docs/PHASE-8-NOTES.md`](docs/PHASE-8-NOTES.md) — each lists what was built,
 what was verified, and the decisions that deviate from the spec.
 
-| Phase | Scope                                                       | Status  |
-| ----- | ----------------------------------------------------------- | ------- |
-| 0     | Foundations: tokens, fonts, type, primitives, shell, CI     | ✅ Done |
-| 1     | Sanity schemas, Studio, typed GROQ, Portable Text renderers | ✅ Done |
-| 2     | Article template, margin rail, footnotes, preview           | ✅ Done |
-| 3     | Home + four index pages + facet pages                       | ✅ Done |
-| 4     | Case study template                                         | ✅ Done |
-| 5     | Postgres, newsletter double opt-in, contact form            | ✅ Done |
-| 6     | Search, command palette, archive                            | ✅ Done |
-| 7     | SEO, feeds, OG images, structured data, analytics           | ✅ Done |
-| 8     | Hardening, e2e, a11y, Lighthouse, content, launch           | ⬜ Next |
+| Phase | Scope                                                       | Status                                 |
+| ----- | ----------------------------------------------------------- | -------------------------------------- |
+| 0     | Foundations: tokens, fonts, type, primitives, shell, CI     | ✅ Done                                |
+| 1     | Sanity schemas, Studio, typed GROQ, Portable Text renderers | ✅ Done                                |
+| 2     | Article template, margin rail, footnotes, preview           | ✅ Done                                |
+| 3     | Home + four index pages + facet pages                       | ✅ Done                                |
+| 4     | Case study template                                         | ✅ Done                                |
+| 5     | Postgres, newsletter double opt-in, contact form            | ✅ Done                                |
+| 6     | Search, command palette, archive                            | ✅ Done                                |
+| 7     | SEO, feeds, OG images, structured data, analytics           | ✅ Done                                |
+| 8     | Hardening, e2e, a11y, Lighthouse, content, launch           | ✅ Built — launch items in the runbook |
 
 ## Getting started
 
@@ -71,19 +74,22 @@ short-lived secret; a banner with an exit link marks the session. Requires
 
 ## Scripts
 
-| Command               | Does                                                                |
-| --------------------- | ------------------------------------------------------------------- |
-| `npm run dev`         | Dev server                                                          |
-| `npm run build`       | Production build                                                    |
-| `npm run typecheck`   | `tsc --noEmit`, strict                                              |
-| `npm run lint`        | ESLint                                                              |
-| `npm run test`        | Vitest                                                              |
-| `npm run format`      | Prettier write                                                      |
-| `npm run typegen`     | Extract Sanity schema + generate types for all GROQ queries         |
-| `npm run seed`        | Seed the development dataset (needs `SANITY_API_WRITE_TOKEN`)       |
-| `npm run db:generate` | Generate a Drizzle migration from `src/db/schema.ts`                |
-| `npm run db:migrate`  | Apply migrations to the Neon database (needs `DATABASE_URL`)        |
-| `npm run verify`      | typegen → typecheck → lint → test → build. Run before every commit. |
+| Command                 | Does                                                                                           |
+| ----------------------- | ---------------------------------------------------------------------------------------------- |
+| `npm run dev`           | Dev server                                                                                     |
+| `npm run build`         | Production build                                                                               |
+| `npm run typecheck`     | `tsc --noEmit`, strict                                                                         |
+| `npm run lint`          | ESLint                                                                                         |
+| `npm run test`          | Vitest                                                                                         |
+| `npm run format`        | Prettier write                                                                                 |
+| `npm run typegen`       | Extract Sanity schema + generate types for all GROQ queries                                    |
+| `npm run seed`          | Seed the development dataset (needs `SANITY_API_WRITE_TOKEN`)                                  |
+| `npm run db:generate`   | Generate a Drizzle migration from `src/db/schema.ts`                                           |
+| `npm run db:migrate`    | Apply migrations to the Neon database (needs `DATABASE_URL`)                                   |
+| `npm run test:coverage` | Unit + component tests with the ≥80% `src/lib` gate                                            |
+| `npm run e2e`           | Playwright (all projects; `e2e:chromium` for one; `PW_CHANNEL=chrome` to use a system browser) |
+| `npm run lint:content`  | Content lint: alt text, broken links, orphans, index presence                                  |
+| `npm run verify`        | typegen → typecheck → lint → test → build. Run before every commit.                            |
 
 ## Architecture notes
 
