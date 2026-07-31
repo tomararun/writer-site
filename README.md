@@ -5,13 +5,14 @@ Built to the specification in [`docs/SPEC.md`](docs/SPEC.md).
 
 ## Status
 
-**Phase 5 complete and verified.** Per-phase notes:
+**Phase 6 complete and verified.** Per-phase notes:
 [`docs/PHASE-0-NOTES.md`](docs/PHASE-0-NOTES.md),
 [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md),
 [`docs/PHASE-2-NOTES.md`](docs/PHASE-2-NOTES.md),
 [`docs/PHASE-3-NOTES.md`](docs/PHASE-3-NOTES.md),
 [`docs/PHASE-4-NOTES.md`](docs/PHASE-4-NOTES.md),
-[`docs/PHASE-5-NOTES.md`](docs/PHASE-5-NOTES.md) — each lists what was built,
+[`docs/PHASE-5-NOTES.md`](docs/PHASE-5-NOTES.md),
+[`docs/PHASE-6-NOTES.md`](docs/PHASE-6-NOTES.md) — each lists what was built,
 what was verified, and the decisions that deviate from the spec.
 
 | Phase | Scope                                                       | Status  |
@@ -22,8 +23,8 @@ what was verified, and the decisions that deviate from the spec.
 | 3     | Home + four index pages + facet pages                       | ✅ Done |
 | 4     | Case study template                                         | ✅ Done |
 | 5     | Postgres, newsletter double opt-in, contact form            | ✅ Done |
-| 6     | Search, command palette, archive                            | ⬜ Next |
-| 7     | SEO, feeds, OG images, structured data, analytics           | ⬜      |
+| 6     | Search, command palette, archive                            | ✅ Done |
+| 7     | SEO, feeds, OG images, structured data, analytics           | ⬜ Next |
 | 8     | Hardening, e2e, a11y, Lighthouse, content, launch           | ⬜      |
 
 ## Getting started
@@ -48,6 +49,9 @@ Open http://localhost:3000. The routes:
 - `/case-studies` and `/projects` — the remaining indexes, plus
   `/case-studies/[slug]` — the 14-section §6.6 template with sticky section
   nav, metrics band, margin-track process artefacts and a lightbox gallery.
+- `/search` (+ the ⌘K / "/" command palette) and `/archive` +
+  `/archive/[year]` — Phase 6: Postgres full-text search with trigram typo
+  fallback, and the client-filterable archive.
 - `/newsletter` and `/contact` — the Phase 5 forms: double-opt-in subscribe
   (Neon + Resend + Upstash + Turnstile; degrades gracefully until the
   services are connected — see

@@ -1,48 +1,66 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 
 /**
- * SPEC §6.0 — the ⌘K entry point.
- *
- * Phase 0 scope: the keyboard shortcut and the button are real, and both navigate
- * to /search. The command palette dialog itself is Phase 6 (P7), because it needs
- * the search API to exist. Wiring the affordance now means the shortcut is
- * discoverable from day one and Phase 6 only swaps the handler.
+ * SPEC §6.0 / §6.13 — the ⌘K (and "/") entry point, now opening the command
+ * palette. The palette itself (Radix Dialog + search UI) is loaded on first
+ * open, so the reading page's JS budget never carries it.
  */
+
+const CommandPalette = dynamic(() => import("@/components/modules/CommandPalette"), {
+  ssr: false,
+});
+
 export function SearchTrigger() {
-  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  function show() {
+    setLoaded(true);
+    setOpen(true);
+  }
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
-      const isShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k";
-      if (!isShortcut) return;
+      const isCommandK = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k";
+      const target = event.target as HTMLElement | null;
+      const inField =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target?.isContentEditable;
+      const isSlash = event.key === "/" && !inField && !event.metaKey && !event.ctrlKey;
+      if (!isCommandK && !isSlash) return;
       event.preventDefault();
-      router.push("/search");
+      show();
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [router]);
+  }, []);
 
   return (
-    <button
-      type="button"
-      onClick={() => router.push("/search")}
-      aria-label="Search"
-      className="inline-flex size-9 items-center justify-center rounded-[var(--radius-xs)] text-ink-muted transition-colors hover:text-ink"
-    >
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 16 16"
-        className="size-4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
+    <>
+      <button
+        type="button"
+        onClick={show}
+        aria-label="Search"
+        aria-haspopup="dialog"
+        className="inline-flex size-9 items-center justify-center rounded-[var(--radius-xs)] text-ink-muted transition-colors hover:text-ink"
       >
-        <circle cx="7" cy="7" r="4.25" />
-        <path d="M10.2 10.2 14 14" strokeLinecap="round" />
-      </svg>
-    </button>
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 16 16"
+          className="size-4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        >
+          <circle cx="7" cy="7" r="4.25" />
+          <path d="M10.2 10.2 14 14" strokeLinecap="round" />
+        </svg>
+      </button>
+      {loaded ? <CommandPalette open={open} onOpenChange={setOpen} /> : null}
+    </>
   );
 }

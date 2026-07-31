@@ -503,6 +503,24 @@ export const newsletterIssuesQuery = defineQuery(`
   }
 `);
 
+/* ── Search index (Phase 6) — everything the reindex script needs ─────── */
+
+export const searchIndexQuery = defineQuery(`
+  *[
+    _type in ["post", "caseStudy", "journalEntry", "project", "page"] &&
+    !(_id in path("drafts.**")) &&
+    (_type in ["project", "page"] || (status == "published" && publishedAt <= now()))
+  ]{
+    _id, _type, kind,
+    "slug": slug.current,
+    title, excerpt, reflection, summary, plainText,
+    "tagTitles": coalesce(tags, topics)[]->title,
+    "category": category->title,
+    publishedAt, entryDate, readingTime,
+    "coverUrl": coalesce(coverImage.asset->url, thumbnail.asset->url)
+  }
+`);
+
 /* ── Redirects (consumed by middleware in Phase 7) ────────────────────── */
 
 export const redirectsQuery = defineQuery(`

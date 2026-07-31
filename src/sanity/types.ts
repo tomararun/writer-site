@@ -2474,6 +2474,95 @@ export type NewsletterIssuesQueryResult = Array<{
     slug: string | null;
   }> | null;
 }>;
+// Variable: searchIndexQuery
+// Query: *[    _type in ["post", "caseStudy", "journalEntry", "project", "page"] &&    !(_id in path("drafts.**")) &&    (_type in ["project", "page"] || (status == "published" && publishedAt <= now()))  ]{    _id, _type, kind,    "slug": slug.current,    title, excerpt, reflection, summary, plainText,    "tagTitles": coalesce(tags, topics)[]->title,    "category": category->title,    publishedAt, entryDate, readingTime,    "coverUrl": coalesce(coverImage.asset->url, thumbnail.asset->url)  }
+export type SearchIndexQueryResult = Array<
+  | {
+      _id: string;
+      _type: "caseStudy";
+      kind: null;
+      slug: string | null;
+      title: string | null;
+      excerpt: string | null;
+      reflection: null;
+      summary: null;
+      plainText: string | null;
+      tagTitles: Array<string | null> | null;
+      category: null;
+      publishedAt: string | null;
+      entryDate: null;
+      readingTime: number | null;
+      coverUrl: string | null;
+    }
+  | {
+      _id: string;
+      _type: "journalEntry";
+      kind: null;
+      slug: string | null;
+      title: string | null;
+      excerpt: null;
+      reflection: string | null;
+      summary: null;
+      plainText: string | null;
+      tagTitles: Array<string | null> | null;
+      category: null;
+      publishedAt: string | null;
+      entryDate: string | null;
+      readingTime: number | null;
+      coverUrl: null;
+    }
+  | {
+      _id: string;
+      _type: "page";
+      kind: null;
+      slug: string | null;
+      title: string | null;
+      excerpt: null;
+      reflection: null;
+      summary: null;
+      plainText: null;
+      tagTitles: null;
+      category: null;
+      publishedAt: null;
+      entryDate: null;
+      readingTime: null;
+      coverUrl: null;
+    }
+  | {
+      _id: string;
+      _type: "post";
+      kind: "essay" | "opinion" | "reflection" | "tutorial" | null;
+      slug: string | null;
+      title: string | null;
+      excerpt: string | null;
+      reflection: null;
+      summary: null;
+      plainText: string | null;
+      tagTitles: Array<string | null> | null;
+      category: string | null;
+      publishedAt: string | null;
+      entryDate: null;
+      readingTime: number | null;
+      coverUrl: string | null;
+    }
+  | {
+      _id: string;
+      _type: "project";
+      kind: null;
+      slug: string | null;
+      title: string | null;
+      excerpt: null;
+      reflection: null;
+      summary: string | null;
+      plainText: null;
+      tagTitles: null;
+      category: null;
+      publishedAt: null;
+      entryDate: null;
+      readingTime: null;
+      coverUrl: string | null;
+    }
+>;
 // Variable: redirectsQuery
 // Query: *[_type == "redirect"]{from, to, permanent}
 export type RedirectsQueryResult = Array<{
@@ -2515,6 +2604,7 @@ declare module "@sanity/client" {
     '\n  *[\n    _type in ["post", "caseStudy", "journalEntry"] &&\n    status == "published" && publishedAt <= now()\n  ] | order(coalesce(entryDate, publishedAt) desc){\n    _id, _type, title, "slug": slug.current,\n    "date": coalesce(entryDate, publishedAt),\n    "kind": coalesce(kind, _type),\n    "category": category->slug.current,\n    "tags": coalesce(tags, topics)[]->slug.current,\n    readingTime, wordCount\n  }\n': ArchiveIndexQueryResult;
     '\n  *[_type == "page" && slug.current == $slug][0]{\n    _id, title, "slug": slug.current, seo,\n    sections[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n    }\n  }\n': PageBySlugQueryResult;
     '\n  *[_type == "newsletterIssue"] | order(number desc){\n    _id, number, title, sentAt, intro,\n    "linkedPosts": linkedPosts[]->{title, "slug": slug.current}\n  }\n': NewsletterIssuesQueryResult;
+    '\n  *[\n    _type in ["post", "caseStudy", "journalEntry", "project", "page"] &&\n    !(_id in path("drafts.**")) &&\n    (_type in ["project", "page"] || (status == "published" && publishedAt <= now()))\n  ]{\n    _id, _type, kind,\n    "slug": slug.current,\n    title, excerpt, reflection, summary, plainText,\n    "tagTitles": coalesce(tags, topics)[]->title,\n    "category": category->title,\n    publishedAt, entryDate, readingTime,\n    "coverUrl": coalesce(coverImage.asset->url, thumbnail.asset->url)\n  }\n': SearchIndexQueryResult;
     '\n  *[_type == "redirect"]{from, to, permanent}\n': RedirectsQueryResult;
   }
 }
