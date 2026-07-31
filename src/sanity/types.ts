@@ -1620,7 +1620,7 @@ export type CaseStudyIndexQueryResult = Array<{
   } | null;
 }>;
 // Variable: caseStudyBySlugQuery
-// Query: *[_type == "caseStudy" && slug.current == $slug][0]{    _id, _type, title, "slug": slug.current, excerpt,    client, role, timeframe, stack, constraints,    background, problem, implementation, outcomes,    "process": process[]{phase, title, body, duration,      artifacts[]{alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},    metrics,    learnings,    links,    testimonial{quote, name, role, avatar{      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},    publishedAt, updatedAt, revisionNote, status,    readingTime, wordCount, headings, seo, canonicalUrl,    "author": author->{name, "slug": slug.current},    "tags": tags[]->{title, "slug": slug.current},    heroMedia{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    coverImage{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    "gallery": gallery[]{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    "relatedPosts": relatedPosts[]->{      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,      "category": category->{title, "slug": slug.current}    }  }
+// Query: *[_type == "caseStudy" && slug.current == $slug][0]{    _id, _type, title, "slug": slug.current, excerpt,    client, role, timeframe, stack, constraints,    "background": background[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "problem": problem[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "implementation": implementation[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "outcomes": outcomes[]{      ...,      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},      markDefs[]{        ...,        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}      }    },    "process": process[]{phase, title, body, duration,      artifacts[]{alt, caption, credit, layout, hotspot, crop,        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},    metrics,    learnings,    links,    testimonial{quote, name, role, avatar{      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},    publishedAt, updatedAt, revisionNote, status,    readingTime, wordCount, headings, seo, canonicalUrl,    "author": author->{name, "slug": slug.current},    "tags": tags[]->{title, "slug": slug.current},    heroMedia{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    coverImage{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    "gallery": gallery[]{alt, caption, credit, layout, hotspot, crop,      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},    "relatedPosts": relatedPosts[]->{      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,      "category": category->{title, "slug": slug.current}    }  }
 export type CaseStudyBySlugQueryResult = {
   _id: string;
   _type: "caseStudy";
@@ -1632,10 +1632,482 @@ export type CaseStudyBySlugQueryResult = {
   timeframe: Timeframe | null;
   stack: Array<string> | null;
   constraints: Array<string> | null;
-  background: BodyText | null;
-  problem: BodyText | null;
-  implementation: BodyText | null;
-  outcomes: BodyText | null;
+  background: Array<
+    | {
+        children?: Array<
+          | ({
+              _key: string;
+            } & Footnote)
+          | {
+              marks?: Array<string>;
+              text?: string;
+              _type: "span";
+              _key: string;
+            }
+        >;
+        style?: "blockquote" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs: Array<
+          | {
+              href?: string;
+              rel?: string;
+              _type: "externalLink";
+              _key: string;
+            }
+          | {
+              reference:
+                | {
+                    _type: "caseStudy";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "journalEntry";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "page";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "post";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "project";
+                    slug: string | null;
+                  }
+                | null;
+              _type: "internalLink";
+              _key: string;
+            }
+        > | null;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        _key: string;
+        _type: "calloutBox";
+        variant?: "aside" | "note" | "update" | "warning";
+        title?: string;
+        body?: SimpleText;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "codeBlock";
+        language?:
+          | "bash"
+          | "css"
+          | "groq"
+          | "html"
+          | "javascript"
+          | "json"
+          | "jsx"
+          | "python"
+          | "sql"
+          | "text"
+          | "tsx"
+          | "typescript";
+        filename?: string;
+        code?: string;
+        highlightLines?: Array<number>;
+        caption?: string;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "embed";
+        url?: string;
+        title?: string;
+        caption?: string;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "figure";
+        asset: {
+          _id: string;
+          url: string | null;
+          dimensions: SanityImageDimensions | null;
+          lqip: string | null;
+        } | null;
+        media?: unknown;
+        hotspot: SanityImageHotspot | null;
+        crop: SanityImageCrop | null;
+        alt: string | null;
+        decorative?: boolean;
+        caption: string | null;
+        credit: string | null;
+        layout: "full" | "inline" | "side" | "wide" | null;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "pullQuote";
+        text?: string;
+        attribution?: string;
+        emphasis?: boolean;
+        markDefs: null;
+      }
+  > | null;
+  problem: Array<
+    | {
+        children?: Array<
+          | ({
+              _key: string;
+            } & Footnote)
+          | {
+              marks?: Array<string>;
+              text?: string;
+              _type: "span";
+              _key: string;
+            }
+        >;
+        style?: "blockquote" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs: Array<
+          | {
+              href?: string;
+              rel?: string;
+              _type: "externalLink";
+              _key: string;
+            }
+          | {
+              reference:
+                | {
+                    _type: "caseStudy";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "journalEntry";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "page";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "post";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "project";
+                    slug: string | null;
+                  }
+                | null;
+              _type: "internalLink";
+              _key: string;
+            }
+        > | null;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        _key: string;
+        _type: "calloutBox";
+        variant?: "aside" | "note" | "update" | "warning";
+        title?: string;
+        body?: SimpleText;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "codeBlock";
+        language?:
+          | "bash"
+          | "css"
+          | "groq"
+          | "html"
+          | "javascript"
+          | "json"
+          | "jsx"
+          | "python"
+          | "sql"
+          | "text"
+          | "tsx"
+          | "typescript";
+        filename?: string;
+        code?: string;
+        highlightLines?: Array<number>;
+        caption?: string;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "embed";
+        url?: string;
+        title?: string;
+        caption?: string;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "figure";
+        asset: {
+          _id: string;
+          url: string | null;
+          dimensions: SanityImageDimensions | null;
+          lqip: string | null;
+        } | null;
+        media?: unknown;
+        hotspot: SanityImageHotspot | null;
+        crop: SanityImageCrop | null;
+        alt: string | null;
+        decorative?: boolean;
+        caption: string | null;
+        credit: string | null;
+        layout: "full" | "inline" | "side" | "wide" | null;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "pullQuote";
+        text?: string;
+        attribution?: string;
+        emphasis?: boolean;
+        markDefs: null;
+      }
+  > | null;
+  implementation: Array<
+    | {
+        children?: Array<
+          | ({
+              _key: string;
+            } & Footnote)
+          | {
+              marks?: Array<string>;
+              text?: string;
+              _type: "span";
+              _key: string;
+            }
+        >;
+        style?: "blockquote" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs: Array<
+          | {
+              href?: string;
+              rel?: string;
+              _type: "externalLink";
+              _key: string;
+            }
+          | {
+              reference:
+                | {
+                    _type: "caseStudy";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "journalEntry";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "page";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "post";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "project";
+                    slug: string | null;
+                  }
+                | null;
+              _type: "internalLink";
+              _key: string;
+            }
+        > | null;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        _key: string;
+        _type: "calloutBox";
+        variant?: "aside" | "note" | "update" | "warning";
+        title?: string;
+        body?: SimpleText;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "codeBlock";
+        language?:
+          | "bash"
+          | "css"
+          | "groq"
+          | "html"
+          | "javascript"
+          | "json"
+          | "jsx"
+          | "python"
+          | "sql"
+          | "text"
+          | "tsx"
+          | "typescript";
+        filename?: string;
+        code?: string;
+        highlightLines?: Array<number>;
+        caption?: string;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "embed";
+        url?: string;
+        title?: string;
+        caption?: string;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "figure";
+        asset: {
+          _id: string;
+          url: string | null;
+          dimensions: SanityImageDimensions | null;
+          lqip: string | null;
+        } | null;
+        media?: unknown;
+        hotspot: SanityImageHotspot | null;
+        crop: SanityImageCrop | null;
+        alt: string | null;
+        decorative?: boolean;
+        caption: string | null;
+        credit: string | null;
+        layout: "full" | "inline" | "side" | "wide" | null;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "pullQuote";
+        text?: string;
+        attribution?: string;
+        emphasis?: boolean;
+        markDefs: null;
+      }
+  > | null;
+  outcomes: Array<
+    | {
+        children?: Array<
+          | ({
+              _key: string;
+            } & Footnote)
+          | {
+              marks?: Array<string>;
+              text?: string;
+              _type: "span";
+              _key: string;
+            }
+        >;
+        style?: "blockquote" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs: Array<
+          | {
+              href?: string;
+              rel?: string;
+              _type: "externalLink";
+              _key: string;
+            }
+          | {
+              reference:
+                | {
+                    _type: "caseStudy";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "journalEntry";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "page";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "post";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "project";
+                    slug: string | null;
+                  }
+                | null;
+              _type: "internalLink";
+              _key: string;
+            }
+        > | null;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        _key: string;
+        _type: "calloutBox";
+        variant?: "aside" | "note" | "update" | "warning";
+        title?: string;
+        body?: SimpleText;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "codeBlock";
+        language?:
+          | "bash"
+          | "css"
+          | "groq"
+          | "html"
+          | "javascript"
+          | "json"
+          | "jsx"
+          | "python"
+          | "sql"
+          | "text"
+          | "tsx"
+          | "typescript";
+        filename?: string;
+        code?: string;
+        highlightLines?: Array<number>;
+        caption?: string;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "embed";
+        url?: string;
+        title?: string;
+        caption?: string;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "figure";
+        asset: {
+          _id: string;
+          url: string | null;
+          dimensions: SanityImageDimensions | null;
+          lqip: string | null;
+        } | null;
+        media?: unknown;
+        hotspot: SanityImageHotspot | null;
+        crop: SanityImageCrop | null;
+        alt: string | null;
+        decorative?: boolean;
+        caption: string | null;
+        credit: string | null;
+        layout: "full" | "inline" | "side" | "wide" | null;
+        markDefs: null;
+      }
+    | {
+        _key: string;
+        _type: "pullQuote";
+        text?: string;
+        attribution?: string;
+        emphasis?: boolean;
+        markDefs: null;
+      }
+  > | null;
   process: Array<{
     phase: string | null;
     title: string | null;
@@ -2035,7 +2507,7 @@ declare module "@sanity/client" {
     '\n  *[\n    _type == "journalEntry" && status == "published" && publishedAt <= now() &&\n    _id != $id && count((topics[]._ref)[@ in $topicIds]) > 0\n  ]{\n    _id, title, "slug": slug.current, entryDate, mood, publishedAt,\n    "tagIds": topics[]._ref\n  }\n': JournalRelatedCandidatesQueryResult;
     '\n  *[_type == "caseStudy" && status == "published" && publishedAt <= now()].slug.current\n': CaseStudySlugsQueryResult;
     '\n  *[_type == "caseStudy" && status == "published" && publishedAt <= now()]\n    | order(publishedAt desc){\n    _id, title, "slug": slug.current, excerpt, client, stack, publishedAt, featured,\n    "metrics": metrics[0...3]{label, value, delta},\n    coverImage{alt, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  }\n': CaseStudyIndexQueryResult;
-    '\n  *[_type == "caseStudy" && slug.current == $slug][0]{\n    _id, _type, title, "slug": slug.current, excerpt,\n    client, role, timeframe, stack, constraints,\n    background, problem, implementation, outcomes,\n    "process": process[]{phase, title, body, duration,\n      artifacts[]{alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},\n    metrics,\n    learnings,\n    links,\n    testimonial{quote, name, role, avatar{\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},\n    publishedAt, updatedAt, revisionNote, status,\n    readingTime, wordCount, headings, seo, canonicalUrl,\n    "author": author->{name, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    heroMedia{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    coverImage{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    "gallery": gallery[]{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    "relatedPosts": relatedPosts[]->{\n      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n      "category": category->{title, "slug": slug.current}\n    }\n  }\n': CaseStudyBySlugQueryResult;
+    '\n  *[_type == "caseStudy" && slug.current == $slug][0]{\n    _id, _type, title, "slug": slug.current, excerpt,\n    client, role, timeframe, stack, constraints,\n    "background": background[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "problem": problem[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "implementation": implementation[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "outcomes": outcomes[]{\n      ...,\n      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n      markDefs[]{\n        ...,\n        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}\n      }\n    },\n    "process": process[]{phase, title, body, duration,\n      artifacts[]{alt, caption, credit, layout, hotspot, crop,\n        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},\n    metrics,\n    learnings,\n    links,\n    testimonial{quote, name, role, avatar{\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},\n    publishedAt, updatedAt, revisionNote, status,\n    readingTime, wordCount, headings, seo, canonicalUrl,\n    "author": author->{name, "slug": slug.current},\n    "tags": tags[]->{title, "slug": slug.current},\n    heroMedia{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    coverImage{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    "gallery": gallery[]{alt, caption, credit, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},\n    "relatedPosts": relatedPosts[]->{\n      _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n      "category": category->{title, "slug": slug.current}\n    }\n  }\n': CaseStudyBySlugQueryResult;
     '\n  *[_type == "project"] | order(featured desc, year desc){\n    _id, title, "slug": slug.current, summary, year, status, stack, featured,\n    links,\n    "caseStudy": caseStudy->{title, "slug": slug.current},\n    thumbnail{alt, layout, hotspot, crop,\n      "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}\n  }\n': ProjectIndexQueryResult;
     '\n{\n  "tag": *[_type == "tag" && slug.current == $slug][0]{title, "slug": slug.current, description},\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    $slug in tags[]->slug.current\n  ] | order(publishedAt desc){\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime,\n    "category": category->{title, "slug": slug.current}\n  },\n  "journalEntries": *[\n    _type == "journalEntry" && status == "published" && publishedAt <= now() &&\n    $slug in topics[]->slug.current\n  ] | order(entryDate desc){\n    _id, title, "slug": slug.current, entryDate, mood\n  }\n}\n': TagFacetQueryResult;
     '\n{\n  "category": *[_type == "category" && slug.current == $slug][0]{\n    title, "slug": slug.current, description\n  },\n  "posts": *[\n    _type == "post" && status == "published" && publishedAt <= now() &&\n    category->slug.current == $slug\n  ] | order(publishedAt desc){\n    _id, title, "slug": slug.current, kind, excerpt, publishedAt, readingTime\n  }\n}\n': CategoryFacetQueryResult;

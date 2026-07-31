@@ -342,7 +342,42 @@ export const caseStudyBySlugQuery = defineQuery(`
   *[_type == "caseStudy" && slug.current == $slug][0]{
     _id, _type, title, "slug": slug.current, excerpt,
     client, role, timeframe, stack, constraints,
-    background, problem, implementation, outcomes,
+    "background": background[]{
+      ...,
+      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,
+        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},
+      markDefs[]{
+        ...,
+        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}
+      }
+    },
+    "problem": problem[]{
+      ...,
+      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,
+        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},
+      markDefs[]{
+        ...,
+        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}
+      }
+    },
+    "implementation": implementation[]{
+      ...,
+      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,
+        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},
+      markDefs[]{
+        ...,
+        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}
+      }
+    },
+    "outcomes": outcomes[]{
+      ...,
+      _type == "figure" => {alt, caption, credit, layout, hotspot, crop,
+        "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}},
+      markDefs[]{
+        ...,
+        _type == "internalLink" => {"reference": reference->{_type, "slug": slug.current}}
+      }
+    },
     "process": process[]{phase, title, body, duration,
       artifacts[]{alt, caption, credit, layout, hotspot, crop,
         "asset": asset->{_id, url, "dimensions": metadata.dimensions, "lqip": metadata.lqip}}},

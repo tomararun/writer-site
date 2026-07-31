@@ -19,6 +19,7 @@ export function ArticleGrid({
   children,
   margin,
   className,
+  measure = "default",
 }: {
   /** Reading progress + section markers. Optional: journal entries have no rail (§6.8). */
   rail?: React.ReactNode;
@@ -27,17 +28,23 @@ export function ArticleGrid({
   /** Footnotes and `layout: side` figures. Empty on most pages. */
   margin?: React.ReactNode;
   className?: string;
+  /** §6.6 — case studies run a 72ch prose track; essays stay at 66ch. */
+  measure?: "default" | "wide";
 }) {
   return (
     <div
       className={cn(
         "mx-auto w-full px-5 sm:px-8 lg:px-12",
         "max-w-[var(--width-container)]",
-        "grid gap-y-0",
-        // Mobile and tablet: one column, capped at the prose measure.
-        "grid-cols-[minmax(0,var(--measure-prose))] justify-center",
+        "grid gap-y-0 justify-center",
+        // Mobile and tablet: one column, capped at the measure.
+        measure === "wide"
+          ? "grid-cols-[minmax(0,var(--measure-wide))]"
+          : "grid-cols-[minmax(0,var(--measure-prose))]",
         // Desktop: the real three-track grid.
-        "lg:grid-cols-[var(--track-rail)_minmax(0,var(--measure-prose))_var(--track-margin)]",
+        measure === "wide"
+          ? "lg:grid-cols-[var(--track-rail)_minmax(0,var(--measure-wide))_var(--track-margin)]"
+          : "lg:grid-cols-[var(--track-rail)_minmax(0,var(--measure-prose))_var(--track-margin)]",
         "lg:justify-start lg:gap-x-8 xl:gap-x-12",
         className,
       )}

@@ -9,7 +9,8 @@ Built to the specification in [`docs/SPEC.md`](docs/SPEC.md).
 [`docs/PHASE-0-NOTES.md`](docs/PHASE-0-NOTES.md),
 [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md),
 [`docs/PHASE-2-NOTES.md`](docs/PHASE-2-NOTES.md),
-[`docs/PHASE-3-NOTES.md`](docs/PHASE-3-NOTES.md) — each lists what was built,
+[`docs/PHASE-3-NOTES.md`](docs/PHASE-3-NOTES.md),
+[`docs/PHASE-4-NOTES.md`](docs/PHASE-4-NOTES.md) — each lists what was built,
 what was verified, and the decisions that deviate from the spec.
 
 | Phase | Scope                                                       | Status  |
@@ -18,8 +19,8 @@ what was verified, and the decisions that deviate from the spec.
 | 1     | Sanity schemas, Studio, typed GROQ, Portable Text renderers | ✅ Done |
 | 2     | Article template, margin rail, footnotes, preview           | ✅ Done |
 | 3     | Home + four index pages + facet pages                       | ✅ Done |
-| 4     | Case study template                                         | ⬜ Next |
-| 5     | Postgres, newsletter double opt-in, contact form            | ⬜      |
+| 4     | Case study template                                         | ✅ Done |
+| 5     | Postgres, newsletter double opt-in, contact form            | ⬜ Next |
 | 6     | Search, command palette, archive                            | ⬜      |
 | 7     | SEO, feeds, OG images, structured data, analytics           | ⬜      |
 | 8     | Hardening, e2e, a11y, Lighthouse, content, launch           | ⬜      |
@@ -43,7 +44,9 @@ Open http://localhost:3000. The routes:
   code blocks with copy, share row, series nav, related, prev/next.
 - `/journal` — the ledger (year strip, sticky month groups, topic filter),
   `/journal/topic/[topic]`, and `/journal/[slug]` entries.
-- `/case-studies` and `/projects` — the remaining indexes.
+- `/case-studies` and `/projects` — the remaining indexes, plus
+  `/case-studies/[slug]` — the 14-section §6.6 template with sticky section
+  nav, metrics band, margin-track process artefacts and a lightbox gallery.
 - `/studio` — the embedded Sanity Studio. Needs a Sanity project: follow
   "Connect your Sanity project" in
   [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md), then `npm run seed` to fill

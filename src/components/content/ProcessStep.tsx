@@ -11,13 +11,26 @@ export type ProcessStepValue = {
 };
 
 /**
- * SPEC §3.2 — one step of a case study's process. The step number comes from
- * the parent (the ordering is meaningful, §3.3); Phase 4's template moves the
- * artifacts into the margin track.
+ * SPEC §3.2 / §6.6 — one step of a case study's process. The number is
+ * decorative (aria-hidden): the parent <ol> already conveys order.
+ *
+ * Artefacts render inline here; at ≥lg the case study page hides them
+ * (`artifactsBelowLgOnly`) and shows margin-track copies positioned at the
+ * step's offset instead (ArtifactsMargin).
  */
-export function ProcessStep({ value, index }: { value: ProcessStepValue; index: number }) {
+export function ProcessStep({
+  value,
+  index,
+  id,
+  artifactsBelowLgOnly = false,
+}: {
+  value: ProcessStepValue;
+  index: number;
+  id?: string;
+  artifactsBelowLgOnly?: boolean;
+}) {
   return (
-    <li className="border-t border-rule pt-6">
+    <li id={id} className="border-t border-rule pt-6">
       <p className="font-mono text-[var(--text-2xs)] uppercase tracking-[var(--tracking-mono)] text-ink-muted">
         <span aria-hidden="true">{String(index).padStart(2, "0")} · </span>
         {value.phase}
@@ -30,7 +43,7 @@ export function ProcessStep({ value, index }: { value: ProcessStepValue; index: 
         </div>
       ) : null}
       {value.artifacts?.length ? (
-        <div className="mt-4 space-y-4">
+        <div className={artifactsBelowLgOnly ? "mt-4 space-y-4 lg:hidden" : "mt-4 space-y-4"}>
           {value.artifacts.map((artifact, i) => (
             <Figure key={i} value={artifact} />
           ))}

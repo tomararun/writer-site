@@ -28,6 +28,29 @@ export function formatDayMonth(iso: string | null | undefined): string {
   }).format(date);
 }
 
+/** "Mar 2025" — §3.3 timeframe endpoints. */
+export function formatMonthYear(iso: string | null | undefined): string {
+  if (!iso) return "";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("en-GB", {
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+}
+
+/** §3.3 — "Mar 2025 – Aug 2025", or "Mar 2025 – ongoing". */
+export function formatTimeframe(
+  timeframe:
+    { start?: string | null; end?: string | null; ongoing?: boolean | null } | null | undefined,
+): string {
+  if (!timeframe?.start) return "";
+  const start = formatMonthYear(timeframe.start);
+  const end = timeframe.ongoing ? "ongoing" : formatMonthYear(timeframe.end);
+  return end ? `${start} – ${end}` : start;
+}
+
 /** The `datetime` attribute value for <time>. */
 export function isoDate(iso: string | null | undefined): string | undefined {
   if (!iso) return undefined;

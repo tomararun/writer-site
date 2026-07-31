@@ -19,6 +19,7 @@
     "verify": "npm run typegen && npm run typecheck && npm run lint && npm run test && npm run build"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.23",
     "@sanity/client": "^7.25.0",
     "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^4.22.0",

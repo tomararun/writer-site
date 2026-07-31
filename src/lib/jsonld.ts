@@ -89,6 +89,54 @@ export function blogJsonLd(input: {
 }
 
 /**
+ * SPEC §6.6 — Article + CreativeWork (with `about` and gallery ImageObjects)
+ * for a case study. Returned as an array; the page serialises it directly.
+ */
+export function caseStudyJsonLd(input: {
+  url: string;
+  headline: string;
+  description?: string | null;
+  datePublished?: string | null;
+  dateModified?: string | null;
+  authorName?: string | null;
+  about?: (string | null)[] | null;
+  images?: { url: string; caption?: string | null }[] | null;
+}): Record<string, unknown>[] {
+  const about = (input.about ?? []).filter(Boolean);
+  const images = input.images ?? [];
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      mainEntityOfPage: { "@type": "WebPage", "@id": input.url },
+      url: input.url,
+      headline: input.headline,
+      ...(input.description ? { description: input.description } : {}),
+      ...(input.datePublished ? { datePublished: input.datePublished } : {}),
+      ...(input.dateModified ? { dateModified: input.dateModified } : {}),
+      ...(input.authorName ? { author: { "@type": "Person", name: input.authorName } } : {}),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      name: input.headline,
+      url: input.url,
+      ...(input.description ? { description: input.description } : {}),
+      ...(about.length > 0 ? { about } : {}),
+      ...(images.length > 0
+        ? {
+            image: images.map((image) => ({
+              "@type": "ImageObject",
+              contentUrl: image.url,
+              ...(image.caption ? { caption: image.caption } : {}),
+            })),
+          }
+        : {}),
+    },
+  ];
+}
+
+/**
  * SPEC §6.4 / §6.8 — BlogPosting structured data. One builder for posts and
  * journal entries; the page renders it into a <script type="application/ld+json">.
  */
