@@ -3,6 +3,7 @@ import { PortableText } from "next-sanity";
 import type { PortableTextBlock } from "next-sanity";
 import { formatDate, isoDate } from "@/lib/format";
 import { cn } from "@/lib/cn";
+import { SubscribeForm } from "./SubscribeForm";
 
 /**
  * SPEC §6.4 — the small post-body sections, in spec order: update note,
@@ -193,17 +194,19 @@ export function RelatedGrid({
 }
 
 /**
- * §6.1 / §6.4 — the subscribe slot. Still a link, not a dead input: the real
- * form with its states arrives with the data layer in Phase 5.
+ * §6.1 / §6.4 / §6.12 — the subscribe slot, now carrying the real
+ * double-opt-in form (Phase 5). `source` feeds §5.7 conversion measurement.
  */
 export function SubscribeBlock({
   variant = "inline",
   heading = "Get the next one by email.",
   pitch,
+  source = "footer",
 }: {
   variant?: "inline" | "panel";
   heading?: string;
   pitch?: string | null;
+  source?: string;
 }) {
   if (variant === "panel") {
     return (
@@ -216,25 +219,19 @@ export function SubscribeBlock({
             {pitch}
           </p>
         ) : null}
-        <Link
-          href="/newsletter"
-          className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 font-display text-[var(--text-sm)] font-semibold text-paper no-underline transition-colors hover:bg-accent"
-        >
-          Subscribe
-        </Link>
+        <div className="mt-5 max-w-md">
+          <SubscribeForm source={source} variant="block" />
+        </div>
       </aside>
     );
   }
 
   return (
-    <aside className="mt-14 border-t border-rule pt-6">
+    <aside aria-label="Newsletter" className="mt-14 border-t border-rule pt-6">
       <p className="font-display text-[var(--text-md)] font-semibold">{heading}</p>
-      <Link
-        href="/newsletter"
-        className="mt-2 inline-block font-display text-[var(--text-sm)] font-semibold text-accent no-underline"
-      >
-        Subscribe →
-      </Link>
+      <div className="mt-3 max-w-md">
+        <SubscribeForm source={source} variant="inline" />
+      </div>
     </aside>
   );
 }

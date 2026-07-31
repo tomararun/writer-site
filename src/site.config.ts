@@ -67,6 +67,15 @@ export const site = {
 
   /** §6.11 — shown on the contact page so people can skip the form. */
   email: "hello@[yourdomain].com",
+
+  /** §6.11 — the collaboration note. Saves everyone's time; keep it honest. */
+  contact: {
+    openTo:
+      "Freelance or contract work on [X]. Writing commissions. Talks and podcasts. Reviewing someone's draft.",
+    decline: "Unpaid 'exposure' work, crypto, and anything that needs an answer today.",
+    responseTime:
+      "I usually reply within 2–3 days. If it's been a week, assume it got lost and send it again.",
+  },
 } as const;
 
 /** §4.5 — named in the footer, because a writer's site should credit its type. */

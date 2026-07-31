@@ -130,6 +130,7 @@ export default async function JournalIndexPage({
       <div className="mt-16">
         <SubscribeBlock
           variant="panel"
+          source="journal"
           heading={site.newsletter.heading}
           pitch={site.newsletter.pitch}
         />

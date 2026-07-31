@@ -246,7 +246,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           />
           <SeriesNav series={post.series} currentSlug={slug} />
           <RelatedGrid items={related} />
-          <SubscribeBlock />
+          <SubscribeBlock source={`post:${slug}`} />
           <PrevNext previous={prevNext?.previous} next={prevNext?.next} />
         </article>
       </ArticleGrid>

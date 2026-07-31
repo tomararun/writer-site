@@ -181,6 +181,7 @@ export default async function WritingIndexPage({
       <div className="mt-16">
         <SubscribeBlock
           variant="panel"
+          source="writing"
           heading={site.newsletter.heading}
           pitch={site.newsletter.pitch}
         />

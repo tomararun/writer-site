@@ -10,7 +10,8 @@ Built to the specification in [`docs/SPEC.md`](docs/SPEC.md).
 [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md),
 [`docs/PHASE-2-NOTES.md`](docs/PHASE-2-NOTES.md),
 [`docs/PHASE-3-NOTES.md`](docs/PHASE-3-NOTES.md),
-[`docs/PHASE-4-NOTES.md`](docs/PHASE-4-NOTES.md) — each lists what was built,
+[`docs/PHASE-4-NOTES.md`](docs/PHASE-4-NOTES.md),
+[`docs/PHASE-5-NOTES.md`](docs/PHASE-5-NOTES.md) — each lists what was built,
 what was verified, and the decisions that deviate from the spec.
 
 | Phase | Scope                                                       | Status  |
@@ -20,8 +21,8 @@ what was verified, and the decisions that deviate from the spec.
 | 2     | Article template, margin rail, footnotes, preview           | ✅ Done |
 | 3     | Home + four index pages + facet pages                       | ✅ Done |
 | 4     | Case study template                                         | ✅ Done |
-| 5     | Postgres, newsletter double opt-in, contact form            | ⬜ Next |
-| 6     | Search, command palette, archive                            | ⬜      |
+| 5     | Postgres, newsletter double opt-in, contact form            | ✅ Done |
+| 6     | Search, command palette, archive                            | ⬜ Next |
 | 7     | SEO, feeds, OG images, structured data, analytics           | ⬜      |
 | 8     | Hardening, e2e, a11y, Lighthouse, content, launch           | ⬜      |
 
@@ -47,6 +48,10 @@ Open http://localhost:3000. The routes:
 - `/case-studies` and `/projects` — the remaining indexes, plus
   `/case-studies/[slug]` — the 14-section §6.6 template with sticky section
   nav, metrics band, margin-track process artefacts and a lightbox gallery.
+- `/newsletter` and `/contact` — the Phase 5 forms: double-opt-in subscribe
+  (Neon + Resend + Upstash + Turnstile; degrades gracefully until the
+  services are connected — see
+  [`docs/PHASE-5-NOTES.md`](docs/PHASE-5-NOTES.md)), and the contact form.
 - `/studio` — the embedded Sanity Studio. Needs a Sanity project: follow
   "Connect your Sanity project" in
   [`docs/PHASE-1-NOTES.md`](docs/PHASE-1-NOTES.md), then `npm run seed` to fill
@@ -58,17 +63,19 @@ short-lived secret; a banner with an exit link marks the session. Requires
 
 ## Scripts
 
-| Command             | Does                                                                |
-| ------------------- | ------------------------------------------------------------------- |
-| `npm run dev`       | Dev server                                                          |
-| `npm run build`     | Production build                                                    |
-| `npm run typecheck` | `tsc --noEmit`, strict                                              |
-| `npm run lint`      | ESLint                                                              |
-| `npm run test`      | Vitest                                                              |
-| `npm run format`    | Prettier write                                                      |
-| `npm run typegen`   | Extract Sanity schema + generate types for all GROQ queries         |
-| `npm run seed`      | Seed the development dataset (needs `SANITY_API_WRITE_TOKEN`)       |
-| `npm run verify`    | typegen → typecheck → lint → test → build. Run before every commit. |
+| Command               | Does                                                                |
+| --------------------- | ------------------------------------------------------------------- |
+| `npm run dev`         | Dev server                                                          |
+| `npm run build`       | Production build                                                    |
+| `npm run typecheck`   | `tsc --noEmit`, strict                                              |
+| `npm run lint`        | ESLint                                                              |
+| `npm run test`        | Vitest                                                              |
+| `npm run format`      | Prettier write                                                      |
+| `npm run typegen`     | Extract Sanity schema + generate types for all GROQ queries         |
+| `npm run seed`        | Seed the development dataset (needs `SANITY_API_WRITE_TOKEN`)       |
+| `npm run db:generate` | Generate a Drizzle migration from `src/db/schema.ts`                |
+| `npm run db:migrate`  | Apply migrations to the Neon database (needs `DATABASE_URL`)        |
+| `npm run verify`      | typegen → typecheck → lint → test → build. Run before every commit. |
 
 ## Architecture notes
 

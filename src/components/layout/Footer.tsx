@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/primitives/Container";
+import { SubscribeForm } from "@/components/modules/SubscribeForm";
 import { colophon, site } from "@/site.config";
 
 /**
@@ -56,12 +57,10 @@ export function Footer() {
             <p className="mt-3 max-w-[28ch] text-[var(--text-sm)] leading-snug text-ink-muted">
               {site.newsletter.pitch}
             </p>
-            <Link
-              href="/newsletter"
-              className="mt-4 inline-block font-display text-[var(--text-sm)] font-semibold text-accent"
-            >
-              Subscribe →
-            </Link>
+            {/* §6.12 — the footer variant of the real double-opt-in form (Phase 5). */}
+            <div className="mt-4 max-w-xs">
+              <SubscribeForm source="footer" variant="footer" />
+            </div>
           </div>
 
           <Column title="Read">

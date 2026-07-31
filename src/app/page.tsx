@@ -177,6 +177,7 @@ export default async function HomePage() {
       <div className="mt-16">
         <SubscribeBlock
           variant="panel"
+          source="home"
           heading={site.newsletter.heading}
           pitch={`${site.newsletter.pitch} No growth tactics. Unsubscribe in one click.`}
         />
